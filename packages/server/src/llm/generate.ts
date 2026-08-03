@@ -40,6 +40,11 @@ export interface GenerateSpriteSpecOptions {
   onTextDelta?: (delta: string) => void;
   onThinkingStart?: () => void;
   onUsage?: (usage: LlmUsage) => void;
+  /**
+   * Se invoca en cuanto se resuelve la caché, antes de decidir si hay que llamar al modelo.
+   * El orquestador lo usa para no anunciar una etapa `llm` que en un hit no llega a ocurrir.
+   */
+  onCacheResult?: (outcome: "hit" | "miss") => void;
   retry?: RunWithFallbackOptions;
   now?: () => number;
 }
@@ -97,6 +102,7 @@ export async function generateSpriteSpec(
   };
 
   const cached = options.cache?.lookup(keyParts);
+  options.onCacheResult?.(cached?.hit === true ? "hit" : "miss");
   if (cached?.hit === true) {
     return {
       spec: cached.spec,

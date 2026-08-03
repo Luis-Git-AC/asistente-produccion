@@ -1,3 +1,4 @@
+export * from "./config.js";
 export * from "./llm/types.js";
 export * from "./llm/client.js";
 export * from "./llm/anthropic-port.js";
@@ -6,3 +7,10 @@ export * from "./llm/fallback.js";
 export * from "./llm/generate.js";
 export * from "./llm/prompts/sprite-spec-system.js";
 export * from "./cache/response-cache.js";
+export * from "./telemetry/types.js";
+export * from "./telemetry/sqlite-repository.js";
+export * from "./mcp/client.js";
+export * from "./routes/sse.js";
+export * from "./routes/generate.js";
+export * from "./routes/metrics.js";
+export * from "./app.js";
