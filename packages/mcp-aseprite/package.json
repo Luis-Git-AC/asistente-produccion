@@ -4,10 +4,26 @@
   "version": "0.0.0",
   "type": "module",
   "main": "./dist/index.js",
+  "bin": {
+    "asistente-mcp-aseprite": "./dist/main.js"
+  },
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "typecheck": "tsc --noEmit -p tsconfig.json",
     "test": "vitest run",
-    "dev": "node --experimental-strip-types --watch src/index.ts"
+    "dev": "tsx watch src/index.ts",
+    "smoke": "tsx src/bridge/smoke.ts",
+    "start": "tsx src/main.ts"
+  },
+  "dependencies": {
+    "@asistente/shared": "*",
+    "@modelcontextprotocol/sdk": "^1.30.0",
+    "ws": "^8.21.1",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@types/luaparse": "^0.2.13",
+    "@types/ws": "^8.18.1",
+    "luaparse": "^0.3.1"
   }
 }

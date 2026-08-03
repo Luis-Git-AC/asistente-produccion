@@ -1,0 +1,105 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`emitGenerateSpriteLua > coincide con el snapshot 1`] = `
+"-- Generado por @asistente/mcp-aseprite — no editar a mano.
+-- spec: gem-icon (sprite) schemaVersion=1.0.0
+local PAL = {
+  ["o"] = 0x12211fff,
+  ["b"] = 0x3f9d90ff,
+  ["s"] = 0x1f5750ff,
+  ["h"] = 0xbdf3eaff,
+  ["a"] = 0xffcd75ff,
+}
+
+local PAL_ORDER = { 0x12211fff, 0x3f9d90ff, 0x1f5750ff, 0xbdf3eaff, 0xffcd75ff }
+
+local FRAMES = {
+  {
+    "...oo...",
+    "..ohho..",
+    ".ohbbho.",
+    "ohbbbbho",
+    "ohbbbbho",
+    ".ohbbho.",
+    "..ohho..",
+    "...oo...",
+  },
+}
+
+local DURS = { 0.100 }
+
+local TAGS = {
+  { name = "idle", from = 1, to = 1, dir = AniDir.FORWARD },
+}
+
+local W, H = 8, 8
+local TRANSPARENT = "."
+
+-- Decodifica un pixel-map compacto a un Image. Índices de Image 0-based, de Lua 1-based.
+local function mapToImage(MAP)
+  local img = Image(W, H, ColorMode.RGB)
+  img:clear(0)
+  for y = 1, #MAP do
+    local row = MAP[y]
+    for x = 1, #row do
+      local ch = row:sub(x, x)
+      if ch ~= TRANSPARENT then
+        local col = PAL[ch]
+        if col then img:drawPixel(x - 1, y - 1, col) end
+      end
+    end
+  end
+  return img
+end
+
+local spr = Sprite(W, H, ColorMode.RGB)
+spr.filename = "/out/gem-icon.aseprite"
+
+app.transaction("asistente: gem-icon", function()
+  local pal = Palette(#PAL_ORDER)
+  for i, c in ipairs(PAL_ORDER) do
+    pal:setColor(i - 1, Color(c))
+  end
+  spr:setPalette(pal)
+
+  spr.layers[1].name = "gem-icon"
+
+  for i = 1, #FRAMES do
+    local f = (i == 1) and spr.frames[1] or spr:newFrame()
+    spr:newCel(spr.layers[1], f, mapToImage(FRAMES[i]), Point(0, 0))
+    f.duration = DURS[i]
+  end
+
+  for _, t in ipairs(TAGS) do
+    local tag = spr:newTag(t.from, t.to)
+    tag.name = t.name
+    tag.aniDir = t.dir
+  end
+end)
+
+spr:saveAs("/out/gem-icon.aseprite")
+
+app.command.ExportSpriteSheet{
+  ui = false,
+  askOverwrite = false,
+  type = SpriteSheetType.ROWS,
+  textureFilename = "/out/gem-icon.png",
+  dataFilename = "/out/gem-icon.json",
+  dataFormat = SpriteSheetDataFormat.JSON_ARRAY,
+  trim = false,
+  borderPadding = 0,
+  shapePadding = 0,
+  innerPadding = 0,
+  extrude = false,
+  splitLayers = false,
+  splitTags = false,
+  listLayers = false,
+  listTags = true,
+  listSlices = false,
+  openGenerated = false,
+}
+
+app.refresh()
+return "OK frames=" .. #spr.frames .. " tags=" .. #spr.tags .. " palette=" .. #PAL_ORDER
+"
+`;
