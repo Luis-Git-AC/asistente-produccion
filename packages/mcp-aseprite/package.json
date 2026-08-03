@@ -1,0 +1,13 @@
+{
+  "name": "@asistente/mcp-aseprite",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "main": "./dist/index.js",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "test": "vitest run",
+    "dev": "node --experimental-strip-types --watch src/index.ts"
+  }
+}

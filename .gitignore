@@ -1,0 +1,13 @@
+node_modules/
+dist/
+build/
+.env
+*.aseprite
+.autorun/
+data/*.db
+data/*.db-journal
+data/*.db-wal
+output/
+coverage/
+*.log
+.DS_Store
