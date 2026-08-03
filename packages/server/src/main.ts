@@ -57,6 +57,7 @@ function main(): void {
     metrics,
     cache,
     corsOrigins: config.corsOrigins,
+    outputDir: config.asepriteOutputDir,
     onLog: log,
   });
 

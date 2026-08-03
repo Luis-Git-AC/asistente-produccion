@@ -1,5 +1,5 @@
 /**
- * Connector falso: habla el mismo protocolo JSON que `aseprite/connector.lua` pero sin Aseprite.
+ * Connector falso: habla el mismo protocolo de líneas que la extensión asistente-connector, pero sin Aseprite.
  * Sirve para validar el transporte de punta a punta en máquinas donde Aseprite no está instalado.
  *
  *   node scripts/fake-connector.mjs [puerto]
@@ -16,17 +16,20 @@ socket.on("open", () => {
 });
 
 socket.on("message", (raw) => {
-  let envelope;
-  try {
-    envelope = JSON.parse(raw.toString());
-  } catch {
+  // Mismo parseo que connector.lua: primera línea el id, el resto el Lua. Sin JSON.
+  const text = raw.toString();
+  const newlineIndex = text.indexOf("\n");
+  if (newlineIndex <= 0) {
+    console.error(`[fake-connector] sobre inválido (${text.length} bytes)`);
     return;
   }
-  console.error(`[fake-connector] recibido ${envelope.id}: ${envelope.lua.slice(0, 60)}`);
+  const id = text.slice(0, newlineIndex);
+  const lua = text.slice(newlineIndex + 1);
+  console.error(`[fake-connector] recibido ${id}: ${lua.slice(0, 60).replace(/\n/g, " ")}`);
 
   // Responde como lo haría Aseprite para el smoke test.
-  const result = envelope.lua.includes("app.version") ? "1.3.7-fake" : "OK";
-  socket.send(JSON.stringify({ id: envelope.id, ok: true, result }));
+  const result = lua.includes("app.version") ? "1.3.7-fake" : "OK";
+  socket.send(JSON.stringify({ id, ok: true, result }));
 });
 
 socket.on("close", () => {

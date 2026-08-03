@@ -11,6 +11,7 @@ export * from "./telemetry/types.js";
 export * from "./telemetry/sqlite-repository.js";
 export * from "./mcp/client.js";
 export * from "./routes/sse.js";
+export * from "./routes/assets.js";
 export * from "./routes/generate.js";
 export * from "./routes/metrics.js";
 export * from "./app.js";

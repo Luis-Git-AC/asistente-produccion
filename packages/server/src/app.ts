@@ -9,6 +9,7 @@ import express, {
 import type { ResponseCache } from "./cache/response-cache.js";
 import type { AnthropicPort, EffortLevel } from "./llm/anthropic-port.js";
 import type { AsepriteMcpPort } from "./mcp/client.js";
+import { createAssetsRouter } from "./routes/assets.js";
 import { createGenerateRouter } from "./routes/generate.js";
 import { createMetricsRouter } from "./routes/metrics.js";
 import type { MetricsRepository } from "./telemetry/types.js";
@@ -20,6 +21,8 @@ export interface AppDeps {
   metrics: MetricsRepository;
   cache?: ResponseCache;
   corsOrigins?: string[];
+  /** Directorio desde el que se sirven los assets generados. Por defecto `output`. */
+  outputDir?: string;
   effort?: EffortLevel;
   chain?: readonly ModelId[];
   now?: () => number;
@@ -68,6 +71,7 @@ export function createApp(deps: AppDeps): Express {
 
   app.use("/api", createGenerateRouter({ ...deps, onLog: log }));
   app.use("/api", createMetricsRouter({ metrics: deps.metrics, ...(deps.now ? { now: deps.now } : {}) }));
+  app.use("/api", createAssetsRouter({ outputDir: deps.outputDir ?? "output" }));
 
   app.use((req: Request, res: Response) => {
     res.status(404).json({ code: "not_found", message: `Ruta no encontrada: ${req.path}` });

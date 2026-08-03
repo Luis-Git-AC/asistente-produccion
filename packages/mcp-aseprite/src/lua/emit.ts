@@ -56,10 +56,22 @@ export function luaString(value: string): string {
   return `"${escaped}"`;
 }
 
-/** `#RRGGBB` -> literal Lua `0xRRGGBBff` (alfa opaco). */
+/**
+ * `#RRGGBB` -> expresión Lua `Color{ r = .., g = .., b = .., a = 255 }`.
+ *
+ * **No se emite un entero hexadecimal.** Aseprite empaqueta RGBA en little-endian
+ * (`0xAABBGGRR`), así que un literal `0xRRGGBBAA` entra con los canales R y B cruzados: los
+ * colores salen parecidos en luminosidad pero con el tono equivocado, que es justo el tipo de
+ * fallo que ningún test de sintaxis detecta. Construir el color por componentes es independiente
+ * del orden de bytes y es lo que hace la implementación de referencia verificada contra
+ * Aseprite 1.3.18.1. `Image:drawPixel` acepta el objeto `Color` igual que el entero.
+ */
 export function hexToLuaColor(hex: string): string {
-  const normalized = hex.replace("#", "").toLowerCase();
-  return `0x${normalized}ff`;
+  const normalized = hex.replace("#", "");
+  const r = Number.parseInt(normalized.slice(0, 2), 16);
+  const g = Number.parseInt(normalized.slice(2, 4), 16);
+  const b = Number.parseInt(normalized.slice(4, 6), 16);
+  return `Color{ r = ${String(r)}, g = ${String(g)}, b = ${String(b)}, a = 255 }`;
 }
 
 const ANI_DIR_BY_DIRECTION: Record<TagDirection, string> = {
@@ -169,7 +181,8 @@ spr.filename = ${luaString(options.asepritePath)}
 app.transaction(${luaString(`asistente: ${spec.name}`)}, function()
   local pal = Palette(#PAL_ORDER)
   for i, c in ipairs(PAL_ORDER) do
-    pal:setColor(i - 1, Color(c))
+    -- PAL_ORDER ya contiene objetos Color construidos por componentes: nada de reempaquetar.
+    pal:setColor(i - 1, c)
   end
   spr:setPalette(pal)
 

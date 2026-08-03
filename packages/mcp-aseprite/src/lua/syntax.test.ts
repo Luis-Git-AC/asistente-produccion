@@ -32,9 +32,34 @@ const PATHS = {
 };
 
 describe("sintaxis del Lua emitido", () => {
-  it("connector.lua es Lua válido", () => {
-    const connector = fileURLToPath(new URL("../../../../aseprite/connector.lua", import.meta.url));
+  it("el connector de la extensión es Lua válido", () => {
+    const connector = fileURLToPath(
+      new URL("../../../../aseprite/extension/asistente-connector/connector.lua", import.meta.url),
+    );
     expectParses(readFileSync(connector, "utf8"));
+  });
+
+  it("la extensión declara init/exit globales, que es como Aseprite la arranca", () => {
+    const connector = fileURLToPath(
+      new URL("../../../../aseprite/extension/asistente-connector/connector.lua", import.meta.url),
+    );
+    const source = readFileSync(connector, "utf8");
+
+    // Si se declararan `local function init(...)`, Aseprite no las encontraría y la extensión
+    // cargaría sin hacer nada: ni comandos en el menú, ni autoconexión.
+    expect(source).toMatch(/^function init\(plugin\)/mu);
+    expect(source).toMatch(/^function exit\(plugin\)/mu);
+  });
+
+  it("el manifiesto de la extensión apunta al connector", () => {
+    const manifestPath = fileURLToPath(
+      new URL("../../../../aseprite/extension/asistente-connector/package.json", import.meta.url),
+    );
+    const manifest = JSON.parse(readFileSync(manifestPath, "utf8")) as {
+      contributes?: { scripts?: Array<{ path: string }> };
+    };
+
+    expect(manifest.contributes?.scripts?.[0]?.path).toBe("./connector.lua");
   });
 
   it("el script de generate_sprite parsea", () => {

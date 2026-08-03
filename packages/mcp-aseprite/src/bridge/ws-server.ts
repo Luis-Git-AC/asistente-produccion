@@ -2,7 +2,7 @@ import { randomUUID } from "node:crypto";
 import { WebSocketServer, type WebSocket } from "ws";
 
 /**
- * Servidor WebSocket que habla con `aseprite/connector.lua`.
+ * Servidor WebSocket que habla con la extensión `aseprite/extension/asistente-connector`.
  *
  * El sentido de la conexión es contraintuitivo: **Aseprite es el cliente** (su API Lua sólo trae
  * cliente WebSocket), así que Node levanta el servidor y espera a que el connector se conecte.
@@ -13,10 +13,29 @@ import { WebSocketServer, type WebSocket } from "ws";
 export const DEFAULT_ASEPRITE_WS_PORT = 3001;
 export const DEFAULT_REQUEST_TIMEOUT_MS = 30_000;
 
-/** Sobre que viaja hacia el connector. */
+/**
+ * Sobre que viaja hacia el connector.
+ *
+ * Se serializa como `"<id>\n<lua>"`, NO como JSON: el módulo `json` de Aseprite varía entre
+ * builds y cuando falla lo hace en silencio dentro del callback, produciendo el síntoma más caro
+ * de este puente (un socket conectado que nunca responde). Partir por la primera línea no puede
+ * fallar a medias. La respuesta sí viene en JSON, porque quien la parsea es Node.
+ */
 export interface LuaRequestEnvelope {
   id: string;
   lua: string;
+}
+
+/** Serializa el sobre al formato de línea que entiende `connector.lua`. */
+export function encodeRequestEnvelope(envelope: LuaRequestEnvelope): string {
+  return `${envelope.id}\n${envelope.lua}`;
+}
+
+/** Contraparte de `encodeRequestEnvelope`, usada por los dobles de test. */
+export function decodeRequestEnvelope(raw: string): LuaRequestEnvelope | undefined {
+  const newlineIndex = raw.indexOf("\n");
+  if (newlineIndex <= 0) return undefined;
+  return { id: raw.slice(0, newlineIndex), lua: raw.slice(newlineIndex + 1) };
 }
 
 /** Sobre que devuelve el connector. */
@@ -94,7 +113,15 @@ export class AsepriteBridge {
       server.once("listening", onListening);
 
       server.on("connection", (socket) => {
-        // Un único connector a la vez: si llega otro, el nuevo sustituye al viejo.
+        // Un único connector a la vez. Si ya había uno, se cierra explícitamente en vez de
+        // limitarse a soltar la referencia: un connector zombi conectado al mismo puerto compite
+        // por las respuestas y produce diagnósticos imposibles de interpretar.
+        const previous = this.#socket;
+        if (previous !== undefined && previous !== socket) {
+          this.#onLog("llegó un connector nuevo; cerrando el anterior");
+          previous.close();
+        }
+
         this.#socket = socket;
         this.#onLog(`connector conectado en el puerto ${String(this.#port)}`);
 
@@ -153,7 +180,7 @@ export class AsepriteBridge {
       throw new AsepriteBridgeError(
         "not_connected",
         `El connector de Aseprite no está conectado en ws://127.0.0.1:${String(this.#port)}. ` +
-          "Abre Aseprite y ejecuta el script aseprite/connector.lua (ver aseprite/README.md).",
+          "Abre Aseprite y usa File > Asistente: Connect (ver aseprite/README.md).",
       );
     }
 
@@ -173,7 +200,7 @@ export class AsepriteBridge {
       }, this.#timeoutMs);
 
       this.#pending.set(id, { resolve, reject, timer });
-      socket.send(JSON.stringify(envelope), (error) => {
+      socket.send(encodeRequestEnvelope(envelope), (error) => {
         if (error !== undefined && error !== null) {
           this.#pending.delete(id);
           clearTimeout(timer);

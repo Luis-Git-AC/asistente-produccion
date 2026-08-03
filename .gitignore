@@ -9,5 +9,7 @@ data/*.db-journal
 data/*.db-wal
 output/
 coverage/
+# Artefacto generado por aseprite/pack-extension.ps1; la fuente es extension/asistente-connector/
+*.aseprite-extension
 *.log
 .DS_Store

@@ -3,7 +3,7 @@ import type { Express } from "express";
 import request from "supertest";
 import { vi } from "vitest";
 import type { AsepriteMcpPort, GenerateSpriteToolResult } from "../mcp/client.js";
-import type { SseEventType } from "./sse.js";
+import type { SseEventType } from "@asistente/shared";
 
 /** Un evento SSE ya parseado desde el cuerpo de la respuesta. */
 export interface ParsedSseEvent {

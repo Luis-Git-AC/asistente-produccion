@@ -3,12 +3,14 @@ import { WebSocket } from "ws";
 import {
   AsepriteBridge,
   AsepriteBridgeError,
+  decodeRequestEnvelope,
+  encodeRequestEnvelope,
   type LuaRequestEnvelope,
 } from "./ws-server.js";
 
 /**
  * El puente se prueba contra un connector falso: un cliente `ws` que habla el mismo protocolo
- * JSON que `aseprite/connector.lua`. Ningún test de este archivo necesita Aseprite abierto.
+ * líneas que la extensión asistente-connector. Ningún test de este archivo necesita Aseprite abierto.
  */
 
 const bridges: AsepriteBridge[] = [];
@@ -53,7 +55,9 @@ async function connectFakeConnector(
   });
 
   socket.on("message", (raw) => {
-    const envelope = JSON.parse(raw.toString()) as LuaRequestEnvelope;
+    // El doble decodifica igual que `connector.lua`: primera línea el id, el resto el Lua.
+    const envelope = decodeRequestEnvelope(raw.toString());
+    if (envelope === undefined) return;
     received.push(envelope);
     const reply = respond(envelope);
     if (reply !== undefined) socket.send(JSON.stringify(reply));
@@ -67,6 +71,27 @@ async function connectFakeConnector(
 afterEach(async () => {
   while (sockets.length > 0) sockets.pop()?.close();
   while (bridges.length > 0) await bridges.pop()?.stop();
+});
+
+describe("formato del sobre", () => {
+  it("serializa como '<id>\\n<lua>', sin JSON", () => {
+    // El módulo json de Aseprite no participa en la recepción: ver comentario en ws-server.ts.
+    expect(encodeRequestEnvelope({ id: "abc", lua: "return app.version" })).toBe(
+      "abc\nreturn app.version",
+    );
+  });
+
+  it("sobrevive a un Lua multilínea, que es el caso normal", () => {
+    const lua = "local x = 1\nreturn x";
+    const decoded = decodeRequestEnvelope(encodeRequestEnvelope({ id: "id-1", lua }));
+
+    expect(decoded).toEqual({ id: "id-1", lua });
+  });
+
+  it("rechaza un sobre sin salto de línea", () => {
+    expect(decodeRequestEnvelope("sin-salto")).toBeUndefined();
+    expect(decodeRequestEnvelope("\nsin-id")).toBeUndefined();
+  });
 });
 
 describe("AsepriteBridge", () => {
@@ -132,7 +157,8 @@ describe("AsepriteBridge", () => {
 
     expect(error).toBeInstanceOf(AsepriteBridgeError);
     expect(error.code).toBe("not_connected");
-    expect(error.message).toMatch(/connector\.lua/u);
+    // El mensaje dice QUÉ hacer, con el nombre exacto del comando del menú de Aseprite.
+    expect(error.message).toMatch(/Asistente: Connect/u);
   });
 
   it("aplica timeout si el connector acepta pero nunca responde", async () => {
@@ -162,6 +188,32 @@ describe("AsepriteBridge", () => {
 
     expect(bridge.isConnected).toBe(true);
     await expect(bridge.sendLua("return 1")).resolves.toBe("segundo");
+  });
+
+  it("cierra el connector anterior cuando llega uno nuevo", async () => {
+    // Dos connectors vivos compitiendo por el mismo puerto producen diagnósticos imposibles
+    // de interpretar (respuestas duplicadas, timeouts intermitentes).
+    const bridge = await startBridge();
+    const first = await connectFakeConnector(bridge, (envelope) => ({
+      id: envelope.id,
+      ok: true,
+      result: "viejo",
+    }));
+
+    const firstClosed = new Promise<void>((resolve) => {
+      first.socket.once("close", () => {
+        resolve();
+      });
+    });
+
+    await connectFakeConnector(bridge, (envelope) => ({
+      id: envelope.id,
+      ok: true,
+      result: "nuevo",
+    }));
+
+    await firstClosed;
+    await expect(bridge.sendLua("return 1")).resolves.toBe("nuevo");
   });
 
   it("rechaza las peticiones en vuelo al cerrar el puente", async () => {

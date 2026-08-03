@@ -1,0 +1,74 @@
+.wrapper {
+  position: relative;
+  height: 100%;
+  min-height: 220px;
+  max-height: 420px;
+  overflow: auto;
+  background: var(--surface-sunken);
+}
+
+.code {
+  display: block;
+  margin: 0;
+  padding: var(--space-4);
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  line-height: 1.65;
+  letter-spacing: var(--tracking-tight);
+  color: var(--text-secondary);
+  white-space: pre-wrap;
+  word-break: break-word;
+  tab-size: 2;
+}
+
+/* Resaltado de claves ya completas: el JSON llega token a token, y sin esto el panel es
+   una masa gris indistinguible. */
+.key {
+  color: var(--text-primary);
+  font-weight: var(--weight-medium);
+}
+
+.string {
+  color: var(--accent);
+}
+
+.number {
+  color: var(--info);
+}
+
+.boolean {
+  color: var(--success);
+}
+
+.punct {
+  color: var(--text-tertiary);
+}
+
+/* Cursor de escritura mientras llegan deltas. */
+.caret {
+  display: inline-block;
+  width: 7px;
+  height: 1em;
+  margin-left: 1px;
+  vertical-align: text-bottom;
+  background: var(--accent);
+  animation: blink 1s steps(2, start) infinite;
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+.empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  min-height: 220px;
+  padding: var(--space-8);
+  text-align: center;
+  color: var(--text-tertiary);
+  font-size: var(--text-sm);
+}

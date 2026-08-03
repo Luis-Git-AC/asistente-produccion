@@ -1,51 +1,12 @@
 import type { Response } from "express";
-import type { SpriteSpec } from "@asistente/shared";
-
-/**
- * Eventos SSE tipados. El contrato entre servidor y UI vive aquí, en un sitio, para que el
- * frontend (fase 05) importe estos tipos en vez de redefinirlos.
- */
-
-export type GenerationStage = "cache" | "llm" | "validate" | "render" | "export";
-
-export interface DoneMetrics {
-  model: string;
-  cache: "hit" | "miss";
-  attempts: number;
-  fellBack: boolean;
-  inputTokens: number;
-  outputTokens: number;
-  cacheReadTokens: number;
-  cacheCreationTokens: number;
-  costUsd: number;
-  llmMs: number;
-  validateMs: number;
-  renderMs: number;
-  totalMs: number;
-}
-
-export type SseEvent =
-  | { type: "stage"; data: { stage: GenerationStage; elapsedMs: number } }
-  | { type: "spec_delta"; data: { text: string } }
-  | { type: "spec_final"; data: { spec: SpriteSpec } }
-  | { type: "render_progress"; data: { frame: number; total: number } }
-  | {
-      type: "done";
-      data: {
-        requestId: string;
-        filePath: string | null;
-        spritesheetPath: string | null;
-        warnings: string[];
-        metrics: DoneMetrics;
-      };
-    }
-  | { type: "error"; data: { code: string; message: string; retryable: boolean } };
-
-export type SseEventType = SseEvent["type"];
+import type { SseEvent } from "@asistente/shared";
 
 /**
  * Escritor SSE. Encapsula el formato del protocolo para que las rutas no manipulen `\n\n`
- * a mano, y lleva la cuenta de si el stream sigue abierto.
+ * a mano, y separa "el cliente colgó" de "la respuesta terminó".
+ *
+ * Los TIPOS de evento viven en `@asistente/shared` (`SseEvent`), porque son el contrato con la
+ * web. Aquí sólo está el transporte, que depende de Express y no puede vivir en shared.
  */
 export class SseWriter {
   readonly #res: Response;

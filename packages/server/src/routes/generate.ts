@@ -8,7 +8,9 @@ import { LlmError } from "../llm/types.js";
 import { McpClientError, type AsepriteMcpPort } from "../mcp/client.js";
 import { sha256 } from "../cache/response-cache.js";
 import type { MetricsRepository, RequestMetrics } from "../telemetry/types.js";
-import { SseWriter, type GenerationStage } from "./sse.js";
+import type { GenerationStage } from "@asistente/shared";
+import { toAssetUrl } from "./assets.js";
+import { SseWriter } from "./sse.js";
 
 /**
  * Orquestador. Une las piezas: caché → modelo → validación → MCP → telemetría, transmitiendo
@@ -181,6 +183,8 @@ export function createGenerateRouter(deps: GenerateRouteDeps): Router {
           requestId,
           filePath,
           spritesheetPath,
+          // La web no puede abrir una ruta de disco: se le da la URL servible ya montada.
+          spritesheetUrl: toAssetUrl(spritesheetPath),
           warnings: render.warnings,
           metrics: {
             model,

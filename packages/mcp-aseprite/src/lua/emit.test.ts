@@ -53,8 +53,27 @@ describe("luaString", () => {
 });
 
 describe("hexToLuaColor", () => {
-  it("convierte #RRGGBB a 0xRRGGBBff", () => {
-    expect(hexToLuaColor("#1A2B3C")).toBe("0x1a2b3cff");
+  it("construye el color por componentes, no como entero empaquetado", () => {
+    expect(hexToLuaColor("#1A2B3C")).toBe("Color{ r = 26, g = 43, b = 60, a = 255 }");
+  });
+
+  it("NUNCA emite un literal hexadecimal empaquetado", () => {
+    // Aseprite empaqueta RGBA en little-endian (0xAABBGGRR): un literal 0xRRGGBBAA entra con
+    // R y B cruzados y produce colores del tono equivocado. Es un fallo invisible para los
+    // tests de sintaxis y de snapshot, así que se vigila explícitamente.
+    for (const hex of ["#000000", "#ffffff", "#3f9d90", "#12211f"]) {
+      expect(hexToLuaColor(hex)).not.toMatch(/0x/u);
+    }
+  });
+
+  it("no confunde el orden de los canales", () => {
+    // Rojo puro debe salir como r=255, no como b=255.
+    expect(hexToLuaColor("#ff0000")).toBe("Color{ r = 255, g = 0, b = 0, a = 255 }");
+    expect(hexToLuaColor("#0000ff")).toBe("Color{ r = 0, g = 0, b = 255, a = 255 }");
+  });
+
+  it("es opaco por defecto", () => {
+    expect(hexToLuaColor("#123456")).toContain("a = 255");
   });
 });
 

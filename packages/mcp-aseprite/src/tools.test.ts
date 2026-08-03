@@ -162,7 +162,7 @@ describe("describeCapabilities", () => {
 
     expect(result.connectorAlive).toBe(false);
     expect(result.asepriteVersion).toBeNull();
-    expect(result.detail).toMatch(/connector\.lua/u);
+    expect(result.detail).toMatch(/Asistente: Connect/u);
     expect(sent).toHaveLength(0);
   });
 

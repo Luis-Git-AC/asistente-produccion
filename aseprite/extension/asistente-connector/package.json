@@ -1,0 +1,11 @@
+{
+  "name": "asistente-connector",
+  "displayName": "Asistente — connector",
+  "description": "Expone la Lua API de Aseprite al MCP server de @asistente/mcp-aseprite vía WebSocket",
+  "version": "1.0.0",
+  "categories": ["Scripts"],
+  "author": { "name": "asistente-produccion" },
+  "contributes": {
+    "scripts": [{ "path": "./connector.lua" }]
+  }
+}

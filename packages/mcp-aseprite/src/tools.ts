@@ -122,8 +122,9 @@ export interface CapabilitiesResult {
 export async function describeCapabilities(context: ToolContext): Promise<CapabilitiesResult> {
   const outputDir = context.outputDir ?? DEFAULT_OUTPUT_DIR;
   const knownLimits = [
-    "Requiere Aseprite v1.3+ (API WebSocket y modulo json).",
-    "El connector no se reconecta solo: si Aseprite se reinicia hay que relanzar el script.",
+    "Requiere Aseprite v1.3+ (API WebSocket en la Lua API).",
+    "El connector es una extensión: autoconecta al abrir Aseprite, pero tras reiniciar el " +
+      "servidor Node hay que reconectar con File > Asistente: Connect.",
     "Un diálogo modal abierto en Aseprite bloquea el socket hasta que se cierre.",
     "Las salidas se confinan al directorio de salida; los nombres se sanean con path.basename.",
     "frame.duration se envía en segundos; el SpriteSpec lo declara en milisegundos.",
@@ -137,7 +138,7 @@ export async function describeCapabilities(context: ToolContext): Promise<Capabi
       outputDir,
       knownLimits,
       detail:
-        "El connector no está conectado. Abre Aseprite y ejecuta aseprite/connector.lua " +
+        "El connector no está conectado. Abre Aseprite y usa File > Asistente: Connect " +
         "(ver aseprite/README.md).",
     };
   }

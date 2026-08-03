@@ -4,14 +4,14 @@ exports[`emitGenerateSpriteLua > coincide con el snapshot 1`] = `
 "-- Generado por @asistente/mcp-aseprite — no editar a mano.
 -- spec: gem-icon (sprite) schemaVersion=1.0.0
 local PAL = {
-  ["o"] = 0x12211fff,
-  ["b"] = 0x3f9d90ff,
-  ["s"] = 0x1f5750ff,
-  ["h"] = 0xbdf3eaff,
-  ["a"] = 0xffcd75ff,
+  ["o"] = Color{ r = 18, g = 33, b = 31, a = 255 },
+  ["b"] = Color{ r = 63, g = 157, b = 144, a = 255 },
+  ["s"] = Color{ r = 31, g = 87, b = 80, a = 255 },
+  ["h"] = Color{ r = 189, g = 243, b = 234, a = 255 },
+  ["a"] = Color{ r = 255, g = 205, b = 117, a = 255 },
 }
 
-local PAL_ORDER = { 0x12211fff, 0x3f9d90ff, 0x1f5750ff, 0xbdf3eaff, 0xffcd75ff }
+local PAL_ORDER = { Color{ r = 18, g = 33, b = 31, a = 255 }, Color{ r = 63, g = 157, b = 144, a = 255 }, Color{ r = 31, g = 87, b = 80, a = 255 }, Color{ r = 189, g = 243, b = 234, a = 255 }, Color{ r = 255, g = 205, b = 117, a = 255 } }
 
 local FRAMES = {
   {
@@ -58,7 +58,8 @@ spr.filename = "/out/gem-icon.aseprite"
 app.transaction("asistente: gem-icon", function()
   local pal = Palette(#PAL_ORDER)
   for i, c in ipairs(PAL_ORDER) do
-    pal:setColor(i - 1, Color(c))
+    -- PAL_ORDER ya contiene objetos Color construidos por componentes: nada de reempaquetar.
+    pal:setColor(i - 1, c)
   end
   spr:setPalette(pal)
 

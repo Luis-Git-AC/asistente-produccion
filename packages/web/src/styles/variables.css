@@ -1,0 +1,191 @@
+/**
+ * Design tokens — única fuente de verdad.
+ *
+ * Dirección: instrumento técnico. Superficies casi neutras, un solo acento (ámbar) reservado a
+ * la etapa activa y a las acciones primarias. El único elemento saturado de la pantalla debe ser
+ * el sprite generado: si la interfaz compite con él, la interfaz ha ganado por el motivo
+ * equivocado.
+ *
+ * Ningún módulo CSS puede hardcodear un valor. Si falta, se añade aquí primero.
+ */
+
+:root {
+  /* ---- Tipografía ------------------------------------------------------ */
+  /* Una sola familia sans; el mono es funcional, no decorativo: marca "esto es
+     un dato medible" (tokens, ms, USD, JSON). */
+  --font-sans:
+    ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial,
+    sans-serif;
+  --font-mono:
+    "JetBrains Mono", "SF Mono", "Cascadia Mono", ui-monospace, "Roboto Mono", Menlo, Consolas,
+    monospace;
+
+  /* Escala con saltos que se notan: 32 -> 20 -> 15 -> 13 -> 11 */
+  --text-display: 2rem; /* 32px */
+  --text-title: 1.25rem; /* 20px */
+  --text-body: 0.9375rem; /* 15px */
+  --text-sm: 0.8125rem; /* 13px */
+  --text-xs: 0.6875rem; /* 11px */
+
+  --weight-regular: 400;
+  --weight-medium: 500;
+  --weight-semibold: 600;
+  --weight-bold: 700;
+
+  --leading-tight: 1.2;
+  --leading-normal: 1.55;
+
+  /* Los datos en mono se leen mejor con algo de tracking negativo en cifras. */
+  --tracking-tight: -0.01em;
+  --tracking-wide: 0.06em;
+
+  /* ---- Espaciado: escala fija de 4px ----------------------------------- */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-12: 48px;
+  --space-16: 64px;
+  --space-24: 96px;
+
+  /* ---- Radios ---------------------------------------------------------- */
+  /* Controles comparten radio; las superficies grandes usan otro. Nada de 8px en todo. */
+  --radius-control: 6px;
+  --radius-surface: 10px;
+  --radius-pill: 999px;
+
+  /* ---- Motion ---------------------------------------------------------- */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in: cubic-bezier(0.7, 0, 0.84, 0);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --duration-micro: 150ms;
+  --duration-component: 240ms;
+
+  /* ---- Alturas de control ---------------------------------------------- */
+  --control-height: 40px;
+  --control-height-lg: 48px;
+
+  --layout-max: 1180px;
+  --border-width: 1px;
+}
+
+/* ---- Tema oscuro (por defecto) ----------------------------------------- */
+:root,
+:root[data-theme="dark"] {
+  color-scheme: dark;
+
+  --bg: #0c0d10;
+  --surface: #131519;
+  --surface-raised: #191c21;
+  --surface-sunken: #0a0b0e;
+
+  --text-primary: #e8eaed;
+  --text-secondary: #9aa1ab;
+  --text-tertiary: #646b75;
+
+  --border: #23262c;
+  --border-strong: #32363e;
+
+  /* Ámbar: sólo etapa activa y acción primaria. Aparece poco, por eso destaca. */
+  --accent: #e8a33d;
+  --accent-contrast: #17130a;
+  --accent-soft: rgba(232, 163, 61, 0.13);
+  --accent-border: rgba(232, 163, 61, 0.36);
+
+  --success: #4ea87a;
+  --error: #e0685f;
+  --warning: #d9a441;
+  --info: #5b9dd9;
+
+  --error-soft: rgba(224, 104, 95, 0.11);
+  --warning-soft: rgba(217, 164, 65, 0.11);
+  --success-soft: rgba(78, 168, 122, 0.11);
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 4px 14px rgba(0, 0, 0, 0.42);
+  --shadow-focus: 0 0 0 3px rgba(232, 163, 61, 0.32);
+
+  /* Damero del preview: hace legible la transparencia del sprite. */
+  --checker-a: #16181c;
+  --checker-b: #101216;
+}
+
+/* ---- Tema claro -------------------------------------------------------- */
+:root[data-theme="light"] {
+  color-scheme: light;
+
+  --bg: #f7f7f5;
+  --surface: #ffffff;
+  --surface-raised: #ffffff;
+  --surface-sunken: #f0f0ed;
+
+  --text-primary: #16181c;
+  --text-secondary: #5a606a;
+  --text-tertiary: #8b919b;
+
+  --border: #e2e2de;
+  --border-strong: #cfcfca;
+
+  --accent: #a86a13;
+  --accent-contrast: #ffffff;
+  --accent-soft: rgba(168, 106, 19, 0.1);
+  --accent-border: rgba(168, 106, 19, 0.34);
+
+  --success: #2f7d55;
+  --error: #b8433a;
+  --warning: #9a7420;
+  --info: #2f6ea8;
+
+  --error-soft: rgba(184, 67, 58, 0.08);
+  --warning-soft: rgba(154, 116, 32, 0.09);
+  --success-soft: rgba(47, 125, 85, 0.08);
+
+  --shadow-sm: 0 1px 2px rgba(20, 22, 26, 0.06);
+  --shadow-md: 0 4px 16px rgba(20, 22, 26, 0.08);
+  --shadow-focus: 0 0 0 3px rgba(168, 106, 19, 0.24);
+
+  --checker-a: #ffffff;
+  --checker-b: #eeeeea;
+}
+
+/* Respeta la preferencia del sistema mientras el usuario no elija tema a mano. */
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme]) {
+    color-scheme: light;
+
+    --bg: #f7f7f5;
+    --surface: #ffffff;
+    --surface-raised: #ffffff;
+    --surface-sunken: #f0f0ed;
+
+    --text-primary: #16181c;
+    --text-secondary: #5a606a;
+    --text-tertiary: #8b919b;
+
+    --border: #e2e2de;
+    --border-strong: #cfcfca;
+
+    --accent: #a86a13;
+    --accent-contrast: #ffffff;
+    --accent-soft: rgba(168, 106, 19, 0.1);
+    --accent-border: rgba(168, 106, 19, 0.34);
+
+    --success: #2f7d55;
+    --error: #b8433a;
+    --warning: #9a7420;
+    --info: #2f6ea8;
+
+    --error-soft: rgba(184, 67, 58, 0.08);
+    --warning-soft: rgba(154, 116, 32, 0.09);
+    --success-soft: rgba(47, 125, 85, 0.08);
+
+    --shadow-sm: 0 1px 2px rgba(20, 22, 26, 0.06);
+    --shadow-md: 0 4px 16px rgba(20, 22, 26, 0.08);
+    --shadow-focus: 0 0 0 3px rgba(168, 106, 19, 0.24);
+
+    --checker-a: #ffffff;
+    --checker-b: #eeeeea;
+  }
+}
