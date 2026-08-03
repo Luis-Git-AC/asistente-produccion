@@ -24,7 +24,7 @@ export function App() {
   const hasStarted = state.status !== "idle";
 
   const retry = (): void => {
-    if (state.prompt !== "") void generate(state.prompt);
+    if (state.prompt !== "") void generate(state.prompt, state.model);
   };
 
   return (
@@ -53,8 +53,8 @@ export function App() {
         </div>
 
         <PromptForm
-          onSubmit={(prompt) => {
-            void generate(prompt);
+          onSubmit={(prompt, model) => {
+            void generate(prompt, model);
           }}
           onCancel={cancel}
           isBusy={isBusy}

@@ -1,6 +1,11 @@
 import type { BetaMessage } from "@anthropic-ai/sdk/resources/beta/messages/messages";
 import { describe, expect, it } from "vitest";
-import { extractText, SERVER_SIDE_FALLBACK_BETA, toSpecMessageResponse } from "./anthropic-port.js";
+import {
+  extractText,
+  SERVER_SIDE_FALLBACK_BETA,
+  supportsServerSideFallback,
+  toSpecMessageResponse,
+} from "./anthropic-port.js";
 import { LlmError, LlmRefusalError } from "./types.js";
 
 function betaMessage(overrides: Partial<BetaMessage>): BetaMessage {
@@ -129,5 +134,21 @@ describe("SERVER_SIDE_FALLBACK_BETA", () => {
   it("es la beta de la forma escalar fallbacks: 'default'", () => {
     // La forma en array usa -2026-06-01; cruzar cabecera y forma devuelve 400.
     expect(SERVER_SIDE_FALLBACK_BETA).toBe("server-side-fallback-2026-07-01");
+  });
+});
+
+describe("supportsServerSideFallback", () => {
+  it("opus-5 lo admite", () => {
+    expect(supportsServerSideFallback("claude-opus-5")).toBe(true);
+  });
+
+  it("sonnet-5 NO lo admite: enviarlo devuelve un 400 de la API", () => {
+    // Verificado contra la API real:
+    //   'claude-sonnet-5' does not support the `fallbacks` parameter.
+    expect(supportsServerSideFallback("claude-sonnet-5")).toBe(false);
+  });
+
+  it("un modelo desconocido se trata como no compatible", () => {
+    expect(supportsServerSideFallback("gpt-9")).toBe(false);
   });
 });

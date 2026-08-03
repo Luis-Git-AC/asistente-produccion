@@ -3,6 +3,7 @@ import type {
   DonePayload,
   ErrorPayload,
   GenerationStage,
+  ModelId,
   SpriteSpec,
   SseEvent,
 } from "@asistente/shared";
@@ -33,6 +34,8 @@ export interface StageRecord {
 export interface GenerationState {
   status: GenerationStatus;
   prompt: string;
+  /** Modelo primario pedido. El servido puede diferir si saltó el fallback. */
+  model: ModelId;
   /** Texto del spec según llega, para el panel de streaming. */
   specText: string;
   spec: SpriteSpec | null;
@@ -45,6 +48,7 @@ export interface GenerationState {
 const INITIAL_STATE: GenerationState = {
   status: "idle",
   prompt: "",
+  model: "claude-opus-5",
   specText: "",
   spec: null,
   stages: [],
@@ -54,7 +58,7 @@ const INITIAL_STATE: GenerationState = {
 };
 
 type Action =
-  | { type: "start"; prompt: string }
+  | { type: "start"; prompt: string; model: ModelId }
   | { type: "sse"; event: SseEvent }
   | { type: "failed"; error: ErrorPayload }
   | { type: "reset" };
@@ -70,7 +74,7 @@ const STATUS_BY_STAGE: Partial<Record<GenerationStage, GenerationStatus>> = {
 function reducer(state: GenerationState, action: Action): GenerationState {
   switch (action.type) {
     case "start":
-      return { ...INITIAL_STATE, status: "streaming", prompt: action.prompt };
+      return { ...INITIAL_STATE, status: "streaming", prompt: action.prompt, model: action.model };
 
     case "reset":
       return INITIAL_STATE;
@@ -132,7 +136,7 @@ function toErrorPayload(error: unknown): ErrorPayload {
 export interface UseGenerationResult {
   state: GenerationState;
   isBusy: boolean;
-  generate: (prompt: string) => Promise<void>;
+  generate: (prompt: string, model?: ModelId) => Promise<void>;
   cancel: () => void;
   reset: () => void;
 }
@@ -152,18 +156,19 @@ export function useGeneration(): UseGenerationResult {
   }, [cancel]);
 
   const generate = useCallback(
-    async (prompt: string): Promise<void> => {
+    async (prompt: string, model: ModelId = "claude-opus-5"): Promise<void> => {
       // Una generación en curso se cancela antes de empezar otra: dos streams a la vez pintarían
       // deltas entremezclados en el mismo panel.
       abortRef.current?.abort();
       const controller = new AbortController();
       abortRef.current = controller;
 
-      dispatch({ type: "start", prompt });
+      dispatch({ type: "start", prompt, model });
 
       try {
         await streamGeneration({
           prompt,
+          model,
           signal: controller.signal,
           onEvent: (event) => {
             dispatch({ type: "sse", event });

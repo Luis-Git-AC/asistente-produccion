@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 import type { SpecMessageRequest } from "./anthropic-port.js";
 import {
+  buildModelChain,
   DEFAULT_MODEL_CHAIN,
   runWithModelFallback,
   simulate5xxEnabled,
@@ -157,5 +158,25 @@ describe("simulate5xxEnabled", () => {
 describe("DEFAULT_MODEL_CHAIN", () => {
   it("va de opus-5 a sonnet-5, como decide PLAN.md", () => {
     expect(DEFAULT_MODEL_CHAIN).toEqual(["claude-opus-5", "claude-sonnet-5"]);
+  });
+});
+
+describe("buildModelChain", () => {
+  it("pone el modelo elegido primero y conserva el resto como fallback", () => {
+    // Semántica acordada: elegir modelo NO desactiva el fallback.
+    expect(buildModelChain("claude-sonnet-5")).toEqual(["claude-sonnet-5", "claude-opus-5"]);
+    expect(buildModelChain("claude-opus-5")).toEqual(["claude-opus-5", "claude-sonnet-5"]);
+  });
+
+  it("no duplica el modelo elegido", () => {
+    const chain = buildModelChain("claude-opus-5", ["claude-opus-5", "claude-sonnet-5"]);
+    expect(chain.filter((m) => m === "claude-opus-5")).toHaveLength(1);
+  });
+
+  it("respeta una cadena disponible personalizada", () => {
+    expect(buildModelChain("claude-sonnet-5", ["claude-opus-5"])).toEqual([
+      "claude-sonnet-5",
+      "claude-opus-5",
+    ]);
   });
 });

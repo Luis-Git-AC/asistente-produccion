@@ -1,5 +1,31 @@
 import { describe, expect, it } from "vitest";
-import { ConfigError, loadConfig } from "./config.js";
+import { resolve } from "node:path";
+import { ConfigError, hasAnyCredential, loadConfig, repoRoot } from "./config.js";
+
+describe("hasAnyCredential", () => {
+  it("acepta ANTHROPIC_API_KEY", () => {
+    expect(hasAnyCredential({ ANTHROPIC_API_KEY: "sk-ant-x", ANTHROPIC_CONFIG_DIR: "/no/existe" })).toBe(
+      true,
+    );
+  });
+
+  it("acepta ANTHROPIC_AUTH_TOKEN aunque no haya API key", () => {
+    // El SDK resuelve también este; exigir la key dejaba fuera un entorno válido.
+    expect(hasAnyCredential({ ANTHROPIC_AUTH_TOKEN: "oat-x", ANTHROPIC_CONFIG_DIR: "/no/existe" })).toBe(
+      true,
+    );
+  });
+
+  it("no acepta una cadena vacía como credencial", () => {
+    expect(
+      hasAnyCredential({ ANTHROPIC_API_KEY: "   ", ANTHROPIC_CONFIG_DIR: "/no/existe" }),
+    ).toBe(false);
+  });
+
+  it("sin nada, y sin perfil de ant en disco, no hay credencial", () => {
+    expect(hasAnyCredential({ ANTHROPIC_CONFIG_DIR: "/ruta/que/no/existe" })).toBe(false);
+  });
+});
 
 describe("loadConfig", () => {
   it("aplica valores por defecto sensatos con un entorno vacío", () => {
@@ -10,7 +36,8 @@ describe("loadConfig", () => {
     expect(config.cacheTtlSeconds).toBe(86_400);
     expect(config.simulate5xx).toBe(false);
     expect(config.corsOrigins).toEqual(["http://localhost:5173"]);
-    expect(config.asepriteOutputDir).toBe("output");
+    // Absoluta y anclada a la raíz del repo: ver config.paths.test.ts.
+    expect(config.asepriteOutputDir).toBe(resolve(repoRoot(), "output"));
   });
 
   it("no exige la API key salvo que se pida explícitamente", () => {
@@ -18,12 +45,15 @@ describe("loadConfig", () => {
   });
 
   it("falla rápido y con un mensaje accionable si falta ANTHROPIC_API_KEY", () => {
-    const act = (): unknown => loadConfig({ env: {}, requireApiKey: true });
+    const act = (): unknown =>
+      loadConfig({ env: { ANTHROPIC_CONFIG_DIR: "/ruta/que/no/existe" }, requireApiKey: true });
 
     expect(act).toThrow(ConfigError);
     expect(act).toThrow(/ANTHROPIC_API_KEY/u);
+    // El mensaje debe mencionar la distinción suscripción vs API: es la confusión más cara.
+    expect(act).toThrow(/suscripción de Claude.ai NO es lo mismo/u);
     // El mensaje dice CÓMO arreglarlo, no sólo qué falta.
-    expect(act).toThrow(/ant auth login/u);
+
   });
 
   it("acepta la key cuando está presente", () => {
@@ -67,6 +97,7 @@ describe("loadConfig", () => {
 
     expect(config.port).toBe(8080);
     expect(config.asepriteWsPort).toBe(4444);
+    // Ya es absoluta (tambien en Windows), asi que se respeta tal cual.
     expect(config.dbPath).toBe("/tmp/x.db");
     expect(config.cacheTtlSeconds).toBe(60);
   });

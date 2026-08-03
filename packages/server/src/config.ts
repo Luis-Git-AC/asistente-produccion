@@ -1,3 +1,7 @@
+import { existsSync } from "node:fs";
+import { homedir } from "node:os";
+import { dirname, isAbsolute, join, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
 import { z } from "zod";
 
 /**
@@ -81,6 +85,92 @@ export interface LoadConfigOptions {
   requireApiKey?: boolean;
 }
 
+/**
+ * Directorio donde `ant auth login` guarda los perfiles OAuth. Que exista significa que el SDK
+ * probablemente pueda resolver una credencial por su cuenta.
+ */
+export function antConfigDir(env: NodeJS.ProcessEnv = process.env): string {
+  const explicit = env["ANTHROPIC_CONFIG_DIR"];
+  if (explicit !== undefined && explicit.trim() !== "") return explicit;
+  if (process.platform === "win32") {
+    return join(env["APPDATA"] ?? join(homedir(), "AppData", "Roaming"), "Anthropic");
+  }
+  return join(homedir(), ".config", "anthropic");
+}
+
+/**
+ * ¿Hay ALGUNA credencial utilizable?
+ *
+ * Que `ANTHROPIC_API_KEY` no esté definida NO significa que no haya credenciales: el SDK resuelve
+ * también `ANTHROPIC_AUTH_TOKEN` y los perfiles de `ant auth login`. Comprobar sólo la key hacía
+ * que el arranque se negara a funcionar en un entorno perfectamente válido — y encima el mensaje
+ * de error mencionaba `ant auth login` como alternativa que el código nunca aceptaba.
+ */
+export function hasAnyCredential(env: NodeJS.ProcessEnv = process.env): boolean {
+  if ((env["ANTHROPIC_API_KEY"] ?? "").trim() !== "") return true;
+  if ((env["ANTHROPIC_AUTH_TOKEN"] ?? "").trim() !== "") return true;
+  return existsSync(join(antConfigDir(env), "credentials"));
+}
+
+/**
+ * Raíz del monorepo, derivada de la ubicación de este módulo y no de `process.cwd()`.
+ *
+ * `config.ts` vive en `packages/server/src/` y su build en `packages/server/dist/`: ambos están
+ * tres niveles por debajo de la raíz, así que el cálculo vale igual en desarrollo y compilado.
+ *
+ * Hace falta porque el servidor y el proceso hijo del MCP se ejecutan con `cwd` DISTINTO
+ * (`packages/server` y la raíz, respectivamente). Resolver rutas relativas contra `cwd` hacía que
+ * el MCP escribiera los assets en un sitio y el servidor los buscara en otro.
+ */
+export function repoRoot(): string {
+  return resolve(dirname(fileURLToPath(import.meta.url)), "..", "..", "..");
+}
+
+/** Convierte una ruta de configuración en absoluta, anclándola a la raíz del repo si es relativa. */
+export function resolveFromRepoRoot(pathLike: string): string {
+  return isAbsolute(pathLike) ? pathLike : resolve(repoRoot(), pathLike);
+}
+
+/**
+ * Busca el `.env` subiendo desde un directorio de partida hasta la raíz del sistema.
+ *
+ * Es imprescindible en un monorepo: `npm run dev -w @asistente/server` ejecuta con
+ * `cwd = packages/server`, no la raíz del repo, así que mirar sólo en `process.cwd()` no
+ * encuentra el `.env` y el servidor se niega a arrancar diciendo que falta la credencial
+ * mientras el usuario la está viendo en el fichero.
+ */
+export function findDotEnv(startDir: string = process.cwd()): string | undefined {
+  let current = resolve(startDir);
+
+  for (;;) {
+    const candidate = join(current, ".env");
+    if (existsSync(candidate)) return candidate;
+
+    const parent = dirname(current);
+    if (parent === current) return undefined; // llegamos a la raíz del sistema
+    current = parent;
+  }
+}
+
+/**
+ * Carga el `.env` dentro de `process.env`, si se encuentra.
+ *
+ * `process.loadEnvFile` es nativo desde Node 20.12/22, así que no hace falta `dotenv`.
+ * Las variables ya presentes en el entorno NO se sobrescriben: la shell gana sobre el fichero,
+ * que es lo que se espera al hacer `SIMULATE_5XX=1 npm run dev`.
+ */
+export function loadDotEnv(envPath?: string): boolean {
+  const target = envPath ?? findDotEnv();
+  if (target === undefined || !existsSync(target)) return false;
+  try {
+    process.loadEnvFile(target);
+    return true;
+  } catch {
+    // Un .env mal formado no debe impedir arrancar si las variables vienen de la shell.
+    return false;
+  }
+}
+
 export function loadConfig(options: LoadConfigOptions = {}): ServerConfig {
   const env = options.env ?? process.env;
   const parsed = ConfigSchema.safeParse(env);
@@ -94,16 +184,25 @@ export function loadConfig(options: LoadConfigOptions = {}): ServerConfig {
 
   const data = parsed.data;
 
-  if (options.requireApiKey === true && (data.ANTHROPIC_API_KEY ?? "") === "") {
+  if (options.requireApiKey === true && !hasAnyCredential(env)) {
     throw new ConfigError(
       [
-        "Falta ANTHROPIC_API_KEY.",
+        "No se encontró ninguna credencial de Anthropic.",
         "",
-        "Ponla en el entorno antes de arrancar:",
-        '  $env:ANTHROPIC_API_KEY = "sk-ant-..."   (PowerShell)',
-        '  export ANTHROPIC_API_KEY="sk-ant-..."   (bash)',
+        "Vale cualquiera de estas tres, en este orden de precedencia:",
         "",
-        "También vale `ant auth login`: el SDK resuelve el perfil por su cuenta.",
+        "  1. ANTHROPIC_API_KEY   — clave de la API (console.anthropic.com > API keys)",
+        '     PowerShell:  $env:ANTHROPIC_API_KEY = "sk-ant-..."',
+        '     bash:        export ANTHROPIC_API_KEY="sk-ant-..."',
+        "     o en un fichero .env en la raíz del repo (está en .gitignore)",
+        "",
+        "  2. ANTHROPIC_AUTH_TOKEN — token OAuth de corta duración",
+        "",
+        "  3. Un perfil de `ant auth login` (el SDK lo resuelve solo)",
+        "",
+        "Ojo: una suscripción de Claude.ai NO es lo mismo que acceso a la API.",
+        "La API se factura aparte, desde console.anthropic.com.",
+        "",
         "Ver .env.example para el resto de variables.",
       ].join("\n"),
     );
@@ -113,10 +212,13 @@ export function loadConfig(options: LoadConfigOptions = {}): ServerConfig {
     anthropicApiKey: data.ANTHROPIC_API_KEY,
     port: data.PORT,
     asepriteWsPort: data.ASEPRITE_WS_PORT,
-    dbPath: data.DB_PATH,
+    // Rutas ABSOLUTAS ancladas a la raíz del repo. Devolverlas relativas dejaba que cada proceso
+    // las resolviera contra su propio `cwd`: el MCP escribía en <raíz>/output y el servidor
+    // buscaba en packages/server/output, con el preview dando 404 pese a existir el fichero.
+    dbPath: resolveFromRepoRoot(data.DB_PATH),
     cacheTtlSeconds: data.CACHE_TTL_SECONDS,
     simulate5xx: data.SIMULATE_5XX,
     corsOrigins: data.CORS_ORIGINS,
-    asepriteOutputDir: data.ASEPRITE_OUTPUT_DIR,
+    asepriteOutputDir: resolveFromRepoRoot(data.ASEPRITE_OUTPUT_DIR),
   };
 }

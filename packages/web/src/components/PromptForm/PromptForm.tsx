@@ -1,5 +1,6 @@
 import clsx from "clsx";
 import { useId, useState, type FormEvent, type KeyboardEvent } from "react";
+import { MODEL_IDS, MODEL_PRICING, type ModelId } from "@asistente/shared";
 import styles from "./PromptForm.module.css";
 
 /** Ejemplos que cubren los tres tipos de asset del alcance mínimo. */
@@ -23,15 +24,22 @@ const EXAMPLES = [
 const MAX_LENGTH = 4000;
 
 interface PromptFormProps {
-  onSubmit: (prompt: string) => void;
+  onSubmit: (prompt: string, model: ModelId) => void;
   onCancel: () => void;
   isBusy: boolean;
 }
 
+/** `claude-opus-5` -> `opus-5`. El prefijo es ruido cuando todos lo comparten. */
+function shortName(model: ModelId): string {
+  return model.replace(/^claude-/u, "");
+}
+
 export function PromptForm({ onSubmit, onCancel, isBusy }: PromptFormProps) {
   const [value, setValue] = useState("");
+  const [model, setModel] = useState<ModelId>("claude-opus-5");
   const [touched, setTouched] = useState(false);
   const textareaId = useId();
+  const modelId = useId();
   const errorId = useId();
 
   const trimmed = value.trim();
@@ -44,7 +52,7 @@ export function PromptForm({ onSubmit, onCancel, isBusy }: PromptFormProps) {
   const submit = (): void => {
     setTouched(true);
     if (isEmpty || validationError !== null || isBusy) return;
-    onSubmit(trimmed);
+    onSubmit(trimmed, model);
   };
 
   const handleSubmit = (event: FormEvent): void => {
@@ -110,6 +118,28 @@ export function PromptForm({ onSubmit, onCancel, isBusy }: PromptFormProps) {
       </div>
 
       <div className={styles.actions}>
+        <div className={styles.modelField}>
+          <label className={styles.fieldLabel} htmlFor={modelId}>
+            Modelo
+          </label>
+          <select
+            id={modelId}
+            className={styles.select}
+            value={model}
+            onChange={(event) => {
+              setModel(event.target.value as ModelId);
+            }}
+            disabled={isBusy}
+          >
+            {MODEL_IDS.map((id) => (
+              <option key={id} value={id}>
+                {shortName(id)} · ${String(MODEL_PRICING[id].inputPerMTok)}/$
+                {String(MODEL_PRICING[id].outputPerMTok)} MTok
+              </option>
+            ))}
+          </select>
+        </div>
+
         <button
           type="submit"
           className={clsx(styles.button, styles.primary)}

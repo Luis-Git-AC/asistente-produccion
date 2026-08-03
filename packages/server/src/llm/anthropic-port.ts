@@ -9,6 +9,26 @@ import { EMPTY_USAGE, LlmError, LlmRefusalError, type LlmUsage } from "./types.j
  */
 export const SERVER_SIDE_FALLBACK_BETA = "server-side-fallback-2026-07-01";
 
+/**
+ * Modelos que aceptan el parámetro `fallbacks`.
+ *
+ * NO es universal: sólo lo admiten los modelos cuyos clasificadores de seguridad pueden declinar
+ * una petición (`stop_reason: "refusal"`), que son los que tienen a dónde caer. Enviarlo a
+ * `claude-sonnet-5` devuelve un 400 literal:
+ *   'claude-sonnet-5' does not support the `fallbacks` parameter.
+ *
+ * Por eso se decide por modelo y no se manda siempre.
+ */
+const MODELS_WITH_SERVER_SIDE_FALLBACK: ReadonlySet<string> = new Set([
+  "claude-opus-5",
+  "claude-fable-5",
+  "claude-mythos-5",
+]);
+
+export function supportsServerSideFallback(model: string): boolean {
+  return MODELS_WITH_SERVER_SIDE_FALLBACK.has(model);
+}
+
 export type EffortLevel = "low" | "medium" | "high" | "xhigh" | "max";
 
 export interface SpecMessageRequest {
@@ -112,7 +132,8 @@ export function createSdkAnthropicPort(client: Anthropic): AnthropicPort {
             effort: request.effort,
             format: { type: "json_schema", schema: request.jsonSchema },
           },
-          ...(request.serverSideFallback === false
+          // Sólo se envía si el modelo lo admite; en el resto, un 400 duro.
+          ...(request.serverSideFallback === false || !supportsServerSideFallback(request.model)
             ? {}
             : { betas: [SERVER_SIDE_FALLBACK_BETA], fallbacks: "default" as const }),
           // El breakpoint de caché va al final del bloque estable. El prompt del usuario viaja

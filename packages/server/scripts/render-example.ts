@@ -10,7 +10,11 @@
  * de Aseprite se conecte, y le pide que materialice el sprite.
  */
 import { EXAMPLE_SPRITE_SPEC } from "@asistente/shared";
+import { loadDotEnv } from "../src/config.js";
 import { AsepriteMcpClient } from "../src/mcp/client.js";
+
+// Para respetar ASEPRITE_WS_PORT / ASEPRITE_OUTPUT_DIR del .env. No necesita credencial.
+loadDotEnv();
 
 const WAIT_FOR_CONNECTOR_MS = 60_000;
 const POLL_INTERVAL_MS = 1000;

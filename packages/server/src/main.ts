@@ -8,7 +8,7 @@
  */
 import { createApp, createLogger } from "./app.js";
 import { ResponseCache } from "./cache/response-cache.js";
-import { ConfigError, loadConfig } from "./config.js";
+import { ConfigError, loadConfig, loadDotEnv } from "./config.js";
 import { createAnthropicClient } from "./llm/client.js";
 import { createSdkAnthropicPort } from "./llm/anthropic-port.js";
 import { simulate5xxEnabled, withSimulatedPrimaryFailure } from "./llm/fallback.js";
@@ -18,6 +18,9 @@ import { SqliteMetricsRepository } from "./telemetry/sqlite-repository.js";
 const log = createLogger();
 
 function main(): void {
+  // Antes de validar nada: sin esto, la clave del .env no llega a process.env.
+  loadDotEnv();
+
   let config;
   try {
     config = loadConfig({ requireApiKey: true });
@@ -63,6 +66,33 @@ function main(): void {
 
   const server = app.listen(config.port, () => {
     log("servidor escuchando", { port: config.port, simulate5xx: config.simulate5xx });
+
+    /**
+     * Health check al arrancar. Además de comprobar que el MCP responde, tiene un efecto
+     * imprescindible: lanza el proceso hijo, que es quien abre el puente WebSocket.
+     *
+     * Sin esto el arranque es perezoso y NADIE escucha en ASEPRITE_WS_PORT hasta la primera
+     * generación, así que el connector de Aseprite se queda en "conectando..." para siempre y
+     * parece que el puente esté roto cuando en realidad no existe todavía.
+     */
+    void mcp
+      .describeCapabilities()
+      .then((capabilities) => {
+        log("puente Aseprite listo", {
+          wsPort: capabilities.wsPort,
+          connectorAlive: capabilities.connectorAlive,
+        });
+        if (!capabilities.connectorAlive) {
+          log("Aseprite todavía no está conectado: abre Aseprite y usa File > Asistente: Connect", {
+            wsPort: capabilities.wsPort,
+          });
+        }
+      })
+      .catch((error: unknown) => {
+        log("no se pudo arrancar el MCP", {
+          error: error instanceof Error ? error.message : String(error),
+        });
+      });
   });
 
   const shutdown = (signal: string): void => {

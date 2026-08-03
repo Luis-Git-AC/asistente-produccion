@@ -10,6 +10,20 @@ import { LlmError, RetriesExhaustedError } from "./types.js";
  */
 export const DEFAULT_MODEL_CHAIN: readonly ModelId[] = ["claude-opus-5", "claude-sonnet-5"];
 
+/**
+ * Construye la cadena poniendo `primary` al frente y conservando el resto como fallback.
+ *
+ * Elegir modelo NO desactiva el fallback: sigue siendo un mecanismo de fiabilidad, no una
+ * preferencia del usuario. Si eliges `sonnet-5` y se cae, la petición se sirve con `opus-5`
+ * antes que fallar — y la telemetría lo registra con `fellBack: true`.
+ */
+export function buildModelChain(
+  primary: ModelId,
+  available: readonly ModelId[] = DEFAULT_MODEL_CHAIN,
+): readonly ModelId[] {
+  return [primary, ...available.filter((model) => model !== primary)];
+}
+
 export interface RunWithFallbackOptions extends WithRetryOptions {
   chain?: readonly ModelId[];
   onModelFallback?: (info: { from: ModelId; to: ModelId; error: unknown }) => void;

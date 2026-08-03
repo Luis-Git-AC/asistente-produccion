@@ -60,8 +60,20 @@ export function CostPanel({ result }: CostPanelProps) {
 
         <div className={styles.metric}>
           <span className={styles.label}>Modelo</span>
+          {/* El nombre del modelo es el dato, no un subtítulo: es lo que se quiere saber de un
+              vistazo, sobre todo cuando el fallback puede haberlo cambiado sin avisar. */}
+          <span className={styles.value} title={metrics.model}>
+            {shortModelName(metrics.model)}
+          </span>
+          <span className={styles.sub}>
+            {metrics.fellBack ? "tras fallback" : "modelo primario"}
+          </span>
+        </div>
+
+        <div className={styles.metric}>
+          <span className={styles.label}>Latencia</span>
           <span className={styles.value}>{formatTotalLatency(metrics.totalMs)}</span>
-          <span className={styles.sub}>{metrics.model}</span>
+          <span className={styles.sub}>total extremo a extremo</span>
         </div>
       </div>
 
@@ -96,4 +108,9 @@ export function CostPanel({ result }: CostPanelProps) {
 
 function formatTotalLatency(totalMs: number): string {
   return totalMs >= 1000 ? `${(totalMs / 1000).toFixed(1)}s` : `${String(Math.round(totalMs))}ms`;
+}
+
+/** `claude-opus-5` -> `opus-5`. El prefijo es ruido cuando todos los modelos lo comparten. */
+export function shortModelName(model: string): string {
+  return model.replace(/^claude-/u, "");
 }

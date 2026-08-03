@@ -1,7 +1,9 @@
 import { EXAMPLE_SPRITE_SPEC } from "@asistente/shared";
 import type { Express } from "express";
 import { afterEach, describe, expect, it, vi } from "vitest";
+import request from "supertest";
 import { createApp } from "../app.js";
+import { toErrorShape } from "./generate.js";
 import { ResponseCache } from "../cache/response-cache.js";
 import { McpClientError } from "../mcp/client.js";
 import { SqliteMetricsRepository } from "../telemetry/sqlite-repository.js";
@@ -257,3 +259,85 @@ describe("POST /api/generate", () => {
 // `instantRetry` se usa a través de los defaults del router; se referencia aquí para que quede
 // explícito que ningún test de este fichero espera de verdad a un backoff.
 void instantRetry;
+
+describe("selector de modelo", () => {
+  it("usa el modelo pedido como primario", async () => {
+    const { app, metrics } = makeHarness();
+
+    const response = await request(app)
+      .post("/api/generate")
+      .send({ prompt: "un icono de gema 8x8", model: "claude-sonnet-5" });
+
+    expect(response.status).toBe(200);
+    expect(metrics.recent(1)[0]?.model).toBe("claude-sonnet-5");
+  });
+
+  it("elegir modelo NO desactiva el fallback", async () => {
+    // Se elige sonnet-5 y falla: debe caer a opus-5 en vez de rendirse.
+    const port = fakePort([
+      httpError(529),
+      httpError(529),
+      httpError(529),
+      specResponse(undefined, { servedByModel: "claude-opus-5" }),
+    ]);
+    const { app, metrics } = makeHarness({ port });
+
+    await request(app)
+      .post("/api/generate")
+      .send({ prompt: "un icono de gema 8x8", model: "claude-sonnet-5" });
+
+    const [recorded] = metrics.recent(1);
+    expect(recorded?.model).toBe("claude-opus-5");
+    expect(recorded?.fellBack).toBe(true);
+  });
+
+  it("rechaza un modelo desconocido con 400, sin abrir stream", async () => {
+    const { app, mcp } = makeHarness();
+
+    const response = await request(app)
+      .post("/api/generate")
+      .send({ prompt: "un icono de gema 8x8", model: "gpt-9-turbo" });
+
+    expect(response.status).toBe(400);
+    expect(response.body.code).toBe("invalid_model");
+    expect(mcp.calls).toHaveLength(0);
+  });
+
+  it("sin modelo explícito usa el primario por defecto", async () => {
+    const { app, metrics } = makeHarness();
+
+    await postGenerate(app);
+
+    expect(metrics.recent(1)[0]?.model).toBe("claude-opus-5");
+  });
+});
+
+describe("toErrorShape con errores de la API", () => {
+  it("un 400 de la API no se disfraza de internal_error", () => {
+    const shape = toErrorShape(Object.assign(new Error("does not support fallbacks"), { status: 400 }));
+
+    expect(shape.code).toBe("api_bad_request");
+    expect(shape.retryable).toBe(false);
+    // El mensaje original NO se reenvía al cliente.
+    expect(shape.message).not.toContain("does not support");
+  });
+
+  it("un 429 es retryable", () => {
+    expect(toErrorShape(Object.assign(new Error("rate limit"), { status: 429 }))).toMatchObject({
+      code: "api_rate_limited",
+      retryable: true,
+    });
+  });
+
+  it("un 401 avisa de credencial", () => {
+    expect(toErrorShape(Object.assign(new Error("bad key"), { status: 401 })).code).toBe(
+      "api_unauthorized",
+    );
+  });
+
+  it("un 5xx es retryable", () => {
+    expect(toErrorShape(Object.assign(new Error("boom"), { status: 503 })).code).toBe(
+      "api_unavailable",
+    );
+  });
+});

@@ -72,6 +72,8 @@ export function parseSseChunk(buffer: string): { events: SseEvent[]; rest: strin
 
 export interface StreamGenerationOptions {
   prompt: string;
+  /** Modelo primario. El servidor conserva el fallback con el resto de la cadena. */
+  model?: string;
   signal: AbortSignal;
   onEvent: (event: SseEvent) => void;
   baseUrl?: string;
@@ -89,7 +91,11 @@ export async function streamGeneration(options: StreamGenerationOptions): Promis
     response = await fetch(`${baseUrl}/api/generate`, {
       method: "POST",
       headers: { "content-type": "application/json", accept: "text/event-stream" },
-      body: JSON.stringify({ prompt: options.prompt }),
+      body: JSON.stringify(
+        options.model === undefined
+          ? { prompt: options.prompt }
+          : { prompt: options.prompt, model: options.model },
+      ),
       signal: options.signal,
     });
   } catch (error) {

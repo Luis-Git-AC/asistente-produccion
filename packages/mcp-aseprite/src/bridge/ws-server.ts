@@ -11,6 +11,7 @@ import { WebSocketServer, type WebSocket } from "ws";
  */
 
 export const DEFAULT_ASEPRITE_WS_PORT = 3001;
+
 export const DEFAULT_REQUEST_TIMEOUT_MS = 30_000;
 
 /**

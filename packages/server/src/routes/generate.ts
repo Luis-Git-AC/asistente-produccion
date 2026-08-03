@@ -1,6 +1,7 @@
 import { randomUUID } from "node:crypto";
 import { Router, type Request, type Response } from "express";
-import { estimateCostUsd, type ModelId } from "@asistente/shared";
+import { estimateCostUsd, MODEL_IDS, type ModelId } from "@asistente/shared";
+import { buildModelChain } from "../llm/fallback.js";
 import type { ResponseCache } from "../cache/response-cache.js";
 import { generateSpriteSpec } from "../llm/generate.js";
 import type { AnthropicPort, EffortLevel } from "../llm/anthropic-port.js";
@@ -54,6 +55,37 @@ export function toErrorShape(error: unknown): ErrorShape {
   if (error instanceof Error && error.name === "AbortError") {
     return { code: "aborted", message: "La petición se canceló.", retryable: false };
   }
+
+  /**
+   * Errores HTTP del SDK. Se traducen a un código y un mensaje propios en vez de caer en el
+   * genérico: un `internal_error` mudo ante un 400 de la API obliga a adivinar. El mensaje
+   * original NO se reenvía (puede arrastrar detalles de la petición); va al log del servidor.
+   */
+  const status = (error as { status?: unknown } | null)?.status;
+  if (typeof status === "number") {
+    if (status === 400) {
+      return {
+        code: "api_bad_request",
+        message:
+          "La API rechazó la petición por sus parámetros. Revisa el log del servidor: lleva el mensaje exacto.",
+        retryable: false,
+      };
+    }
+    if (status === 401 || status === 403) {
+      return {
+        code: "api_unauthorized",
+        message: "Credencial inválida o sin permiso para este modelo.",
+        retryable: false,
+      };
+    }
+    if (status === 429) {
+      return { code: "api_rate_limited", message: "Límite de peticiones alcanzado.", retryable: true };
+    }
+    if (status >= 500) {
+      return { code: "api_unavailable", message: "La API no está disponible.", retryable: true };
+    }
+  }
+
   return { code: "internal_error", message: "Error interno del servidor.", retryable: false };
 }
 
@@ -75,6 +107,23 @@ export function createGenerateRouter(deps: GenerateRouteDeps): Router {
       return;
     }
 
+    // Modelo primario elegido por el cliente. Se valida contra la lista conocida: aceptar un
+    // string libre acabaría en un 404 del SDK con un mensaje mucho menos claro.
+    const requestedModel: unknown = req.body?.model;
+    if (requestedModel !== undefined && !MODEL_IDS.includes(requestedModel as ModelId)) {
+      res.status(400).json({
+        code: "invalid_model",
+        message: `Modelo no reconocido. Válidos: ${MODEL_IDS.join(", ")}.`,
+      });
+      return;
+    }
+
+    // El fallback se conserva: el modelo elegido va primero, el resto queda detrás.
+    const chain =
+      requestedModel === undefined
+        ? (deps.chain ?? undefined)
+        : buildModelChain(requestedModel as ModelId, deps.chain ?? undefined);
+
     const sse = new SseWriter(res);
     const abort = new AbortController();
 
@@ -95,7 +144,7 @@ export function createGenerateRouter(deps: GenerateRouteDeps): Router {
       sse.send({ type: "stage", data: { stage: name, elapsedMs: now() - startedAt } });
     };
 
-    let model: ModelId = deps.chain?.[0] ?? "claude-opus-5";
+    let model: ModelId = chain?.[0] ?? "claude-opus-5";
     let cache: "hit" | "miss" = "miss";
     let attempts = 0;
     let fellBack = false;
@@ -122,7 +171,7 @@ export function createGenerateRouter(deps: GenerateRouteDeps): Router {
         prompt,
         port: deps.port,
         ...(deps.cache ? { cache: deps.cache } : {}),
-        ...(deps.chain ? { chain: deps.chain } : {}),
+        ...(chain ? { chain } : {}),
         ...(deps.effort ? { effort: deps.effort } : {}),
         signal: abort.signal,
         onCacheResult: (outcome) => {
@@ -207,7 +256,17 @@ export function createGenerateRouter(deps: GenerateRouteDeps): Router {
       status = "error";
       const shape = toErrorShape(error);
       errorCode = shape.code;
-      log("petición fallida", { requestId, code: shape.code });
+      // Al cliente le va la forma saneada; al log, el error REAL. Registrar sólo el código
+      // dejaba un `internal_error` sin ninguna pista de qué había fallado, que es
+      // exactamente el caso en el que más falta hace el detalle.
+      log("petición fallida", {
+        requestId,
+        code: shape.code,
+        model,
+        chain: chain === undefined ? undefined : [...chain],
+        error: error instanceof Error ? `${error.name}: ${error.message}` : String(error),
+        stack: error instanceof Error ? error.stack : undefined,
+      });
       sse.send({ type: "error", data: shape });
     } finally {
       // Pase lo que pase: se registra la telemetría y se cierra el stream. Un stream que no
