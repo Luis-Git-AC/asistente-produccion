@@ -1,0 +1,15 @@
+{
+  "id": "potion-icon-es",
+  "prompt": "Icono de poción de vida para el inventario, 16x16, contorno oscuro continuo y 3 valores tonales en el líquido.",
+  "tags": ["sprite", "idioma", "consistencia"],
+  "notes": "Mitad española del par de consistencia entre idiomas. Ver potion-icon-en.",
+  "expectations": {
+    "kind": "sprite",
+    "canvas": { "width": 16, "height": 16 },
+    "palette": { "max": 8 },
+    "frames": { "exact": 1 },
+    "tags": { "min": 1 },
+    "minOpaqueRatio": 0.1,
+    "equivalentTo": "potion-icon-en"
+  }
+}

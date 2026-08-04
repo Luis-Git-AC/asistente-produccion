@@ -7,7 +7,8 @@
     "packages/shared",
     "packages/server",
     "packages/web",
-    "packages/mcp-aseprite"
+    "packages/mcp-aseprite",
+    "evals"
   ],
   "scripts": {
     "typecheck": "npm run typecheck --workspaces --if-present",
@@ -17,7 +18,10 @@
     "build": "npm run build --workspaces --if-present",
     "dev": "npm run dev --workspaces --if-present",
     "ci:local": "npm run typecheck && npm run lint && npm run test",
-    "seed:metrics": "npm run seed:metrics -w @asistente/server"
+    "seed:metrics": "npm run seed:metrics -w @asistente/server",
+    "evals": "tsx --tsconfig evals/tsconfig.json evals/src/main.ts",
+    "evals:fixtures": "npm run evals -- --fixtures",
+    "evals:record": "npm run evals -- --record"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

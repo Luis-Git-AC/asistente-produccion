@@ -1,0 +1,17 @@
+{
+  "id": "slime-idle-pingpong",
+  "prompt": "Slime verde de 16x16 con una animación de reposo de 4 frames que respire: un tag \"idle\" en pingpong y duraciones desiguales para que no se lea mecánico.",
+  "tags": ["sprite", "animacion", "ritmo"],
+  "notes": "El pingpong y las duraciones desiguales son detalles que el modelo tiende a soltar: son la diferencia entre una animación con peso y un bucle de reloj.",
+  "expectations": {
+    "kind": "sprite",
+    "canvas": { "width": 16, "height": 16 },
+    "palette": { "max": 8 },
+    "frames": { "exact": 4 },
+    "tags": { "exact": 1 },
+    "tagDirections": ["pingpong"],
+    "distinctFrameDurations": true,
+    "noOrphanFrames": true,
+    "minOpaqueRatio": 0.1
+  }
+}

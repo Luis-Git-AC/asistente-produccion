@@ -1,0 +1,16 @@
+{
+  "caseId": "mono-cursor-8",
+  "model": "claude-opus-5",
+  "servedByModel": "claude-opus-5",
+  "promptSha256": "23be2950d0aebcc18f39f599de4ab1882e1b94f69774082a5ea8c2495d1ef22d",
+  "origin": "synthetic-seed",
+  "recordedAt": "2026-08-04T00:00:00.000Z",
+  "latencyMs": 11017,
+  "usage": {
+    "input_tokens": 27,
+    "output_tokens": 831,
+    "cache_read_input_tokens": 1387,
+    "cache_creation_input_tokens": 0
+  },
+  "responseText": "{\"schemaVersion\":\"1.0.0\",\"kind\":\"sprite\",\"name\":\"arrow-cursor\",\"canvas\":{\"width\":8,\"height\":8},\"palette\":[{\"token\":\"o\",\"hex\":\"#0b0b0f\",\"role\":\"outline\"},{\"token\":\"w\",\"hex\":\"#f4f4f8\",\"role\":\"base\"}],\"shapeLanguage\":{\"dominantShape\":\"triangle\",\"silhouette\":\"flecha diagonal con cola corta; la punta en la esquina superior izquierda fija el punto de clic\",\"readabilityNotes\":\"dos colores exactos: el contorno negro garantiza contraste sobre cualquier fondo y el relleno claro define la masa\",\"valueStructure\":2},\"frames\":[{\"index\":0,\"durationMs\":100,\"pixels\":[\"o.......\",\"oo......\",\"owo.....\",\"owwo....\",\"owwwo...\",\"owwwwo..\",\"owwooo..\",\"oo.owo..\"]}],\"tags\":[{\"name\":\"default\",\"from\":0,\"to\":0,\"direction\":\"forward\"}],\"export\":{\"spritesheetLayout\":\"rows\",\"padding\":0,\"generateJson\":true}}"
+}

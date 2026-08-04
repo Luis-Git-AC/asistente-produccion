@@ -1,0 +1,15 @@
+{
+  "id": "ambiguous-creature",
+  "prompt": "Hazme un bicho chulo.",
+  "tags": ["ambiguo", "defaults"],
+  "notes": "Prompt ambiguo a propósito: no dice tamaño, ni paleta, ni si está animado. No se mide si acierta con el bicho, se mide si elige defaults acotados y utilizables en vez de inventarse un lienzo enorme o una paleta de 60 colores.",
+  "expectations": {
+    "canvasMax": { "width": 64, "height": 64 },
+    "canvasMultipleOf": 8,
+    "palette": { "max": 16 },
+    "frames": { "min": 1, "max": 8 },
+    "tags": { "min": 1 },
+    "noOrphanFrames": true,
+    "minOpaqueRatio": 0.05
+  }
+}

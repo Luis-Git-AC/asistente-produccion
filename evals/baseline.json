@@ -1,0 +1,24 @@
+{
+  "baselineVersion": "1.0.0",
+  "recordedAt": "2026-08-04T09:56:31.205Z",
+  "model": "claude-opus-5",
+  "source": "fixtures",
+  "graders": {
+    "schema-valid": 1,
+    "palette-constraint": 1,
+    "canvas-constraint": 1,
+    "frame-tag-coherence": 0.9872,
+    "pixel-map-integrity": 1,
+    "lua-emits-single-transaction": 1
+  },
+  "runGraders": {
+    "latency-budget": 1,
+    "cost-budget": 1,
+    "cross-language-consistency": 1
+  },
+  "totals": {
+    "passRate": 0.9231,
+    "costPerSpriteUsd": 0.032067,
+    "latencyP95Ms": 18850
+  }
+}

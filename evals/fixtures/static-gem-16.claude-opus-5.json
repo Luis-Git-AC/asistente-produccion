@@ -1,0 +1,16 @@
+{
+  "caseId": "static-gem-16",
+  "model": "claude-opus-5",
+  "servedByModel": "claude-opus-5",
+  "promptSha256": "7c6b9af8cb9b2cba9a6788119392ecf2a89b83db1dfca0122e6e74edfa0e285c",
+  "origin": "synthetic-seed",
+  "recordedAt": "2026-08-04T00:00:00.000Z",
+  "latencyMs": 11682,
+  "usage": {
+    "input_tokens": 31,
+    "output_tokens": 926,
+    "cache_read_input_tokens": 1387,
+    "cache_creation_input_tokens": 0
+  },
+  "responseText": "{\"schemaVersion\":\"1.0.0\",\"kind\":\"sprite\",\"name\":\"gem-hud-icon\",\"canvas\":{\"width\":16,\"height\":16},\"palette\":[{\"token\":\"o\",\"hex\":\"#161228\",\"role\":\"outline\"},{\"token\":\"b\",\"hex\":\"#3fa6c4\",\"role\":\"base\"},{\"token\":\"s\",\"hex\":\"#1f5f79\",\"role\":\"shadow\"},{\"token\":\"h\",\"hex\":\"#b8ecf7\",\"role\":\"highlight\"},{\"token\":\"a\",\"hex\":\"#ffe9a8\",\"role\":\"accent\"}],\"shapeLanguage\":{\"dominantShape\":\"triangle\",\"silhouette\":\"rombo simétrico con vértices marcados; se lee como gema a 16x16 sin ambigüedad\",\"readabilityNotes\":\"contorno continuo de un píxel, brillo en la cara superior izquierda y sombra en la inferior derecha\",\"valueStructure\":4},\"frames\":[{\"index\":0,\"durationMs\":100,\"pixels\":[\"................\",\".......oo.......\",\"......osso......\",\".....osssso.....\",\"....obssssso....\",\"...obaassssso...\",\"..ohbabbssssso..\",\".ohhhbbbbssssso.\",\".ohhhhbbbbsssso.\",\"..ohhhhbbbbsso..\",\"...ohhhhbbbbo...\",\"....ohhhhbbo....\",\".....ohhhho.....\",\"......ohho......\",\".......oo.......\",\"................\"]}],\"tags\":[{\"name\":\"idle\",\"from\":0,\"to\":0,\"direction\":\"forward\"}],\"export\":{\"spritesheetLayout\":\"rows\",\"padding\":0,\"generateJson\":true}}"
+}

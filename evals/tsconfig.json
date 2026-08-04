@@ -1,0 +1,19 @@
+{
+  "extends": "../tsconfig.base.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "declaration": false,
+    "declarationMap": false,
+    "sourceMap": false,
+    "baseUrl": ".",
+    // Los tres workspaces se resuelven contra su CÓDIGO FUENTE, no contra `dist/`.
+    // `npm run evals -- --fixtures` tiene que poder correr en un clon recién instalado, sin
+    // ningún build previo; `tsx --tsconfig` respeta estos `paths` igual que `tsc`.
+    "paths": {
+      "@asistente/shared": ["../packages/shared/src/index.ts"],
+      "@asistente/mcp-aseprite": ["../packages/mcp-aseprite/src/index.ts"],
+      "@asistente/server": ["../packages/server/src/index.ts"]
+    }
+  },
+  "include": ["src"]
+}

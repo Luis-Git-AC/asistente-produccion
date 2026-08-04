@@ -1,0 +1,16 @@
+{
+  "caseId": "potion-icon-en",
+  "model": "claude-opus-5",
+  "servedByModel": "claude-opus-5",
+  "promptSha256": "cb6dd1ca9f433e864a2c29ac5618af96fcb734f6c4060e881496e70d99dfd0e5",
+  "origin": "synthetic-seed",
+  "recordedAt": "2026-08-04T00:00:00.000Z",
+  "latencyMs": 11801,
+  "usage": {
+    "input_tokens": 29,
+    "output_tokens": 943,
+    "cache_read_input_tokens": 1387,
+    "cache_creation_input_tokens": 0
+  },
+  "responseText": "{\"schemaVersion\":\"1.0.0\",\"kind\":\"sprite\",\"name\":\"health-potion-icon\",\"canvas\":{\"width\":16,\"height\":16},\"palette\":[{\"token\":\"o\",\"hex\":\"#150f18\",\"role\":\"outline\"},{\"token\":\"b\",\"hex\":\"#d9403f\",\"role\":\"base\"},{\"token\":\"s\",\"hex\":\"#8a2223\",\"role\":\"shadow\"},{\"token\":\"h\",\"hex\":\"#ffb3a7\",\"role\":\"highlight\"},{\"token\":\"g\",\"hex\":\"#9aa7bd\",\"role\":\"accent\"}],\"shapeLanguage\":{\"dominantShape\":\"circle\",\"silhouette\":\"frasco de cuello estrecho y cuerpo redondo, idéntico en construcción al de maná para que la familia de iconos se lea junta\",\"readabilityNotes\":\"contorno oscuro continuo y tres valores en el líquido: base, sombra inferior derecha y un brillo de un píxel\",\"valueStructure\":3},\"frames\":[{\"index\":0,\"durationMs\":100,\"pixels\":[\"................\",\"................\",\".....oooooo.....\",\"......oggo......\",\"......oggo......\",\"......oggo......\",\"......ogggo.....\",\".....ogggggo....\",\"....obbbbbbbo...\",\"....ohhbbbbbo...\",\"...obhbbbbbbbo..\",\"....obbbbbsso...\",\"....obbbbbsso...\",\".....obbbbso....\",\"......ooooo.....\",\"................\"]}],\"tags\":[{\"name\":\"idle\",\"from\":0,\"to\":0,\"direction\":\"forward\"}],\"export\":{\"spritesheetLayout\":\"rows\",\"padding\":0,\"generateJson\":true}}"
+}

@@ -1,0 +1,15 @@
+{
+  "id": "potion-icon-en",
+  "prompt": "Health potion icon for the inventory, 16x16, continuous dark outline and 3 tonal values in the liquid.",
+  "tags": ["sprite", "idioma", "consistencia"],
+  "notes": "Traducción literal de potion-icon-es. El mismo encargo en otro idioma debe producir el mismo sprite: si el idioma mueve el lienzo o el número de frames, el sistema está reaccionando a la superficie del prompt en vez de a su contenido.",
+  "expectations": {
+    "kind": "sprite",
+    "canvas": { "width": 16, "height": 16 },
+    "palette": { "max": 8 },
+    "frames": { "exact": 1 },
+    "tags": { "min": 1 },
+    "minOpaqueRatio": 0.1,
+    "equivalentTo": "potion-icon-es"
+  }
+}

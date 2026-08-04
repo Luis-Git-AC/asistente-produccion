@@ -1,0 +1,947 @@
+{
+  "reportVersion": "1.0.0",
+  "generatedAt": "2026-08-04T10:03:34.109Z",
+  "source": "fixtures",
+  "model": "claude-opus-5",
+  "specSchemaVersion": "1.0.0",
+  "totals": {
+    "cases": 13,
+    "passedCases": 12,
+    "passRate": 0.9230769230769231,
+    "inputTokens": 597,
+    "outputTokens": 16195,
+    "costUsd": 0.41687549999999995,
+    "costPerSpriteUsd": 0.03206734615384615,
+    "latencyP50Ms": 12991,
+    "latencyP95Ms": 18849.999999999996
+  },
+  "cases": [
+    {
+      "caseId": "static-gem-16",
+      "tags": [
+        "sprite",
+        "estatico",
+        "paleta"
+      ],
+      "model": "claude-opus-5",
+      "source": "fixture",
+      "latencyMs": 11682,
+      "usage": {
+        "input_tokens": 31,
+        "output_tokens": 926,
+        "cache_read_input_tokens": 1387,
+        "cache_creation_input_tokens": 0
+      },
+      "costUsd": 0.0239985,
+      "transportError": null,
+      "graders": {
+        "schema-valid": {
+          "score": 1,
+          "passed": true,
+          "detail": "válido: sprite 16x16, 1 frame(s), 5 color(es), 1 tag(s)"
+        },
+        "palette-constraint": {
+          "score": 1,
+          "passed": true,
+          "detail": "5 color(es), se pedía ≤ 8"
+        },
+        "canvas-constraint": {
+          "score": 1,
+          "passed": true,
+          "detail": "lienzo exacto 16x16"
+        },
+        "frame-tag-coherence": {
+          "score": 1,
+          "passed": true,
+          "detail": "6/6 comprobaciones OK"
+        },
+        "pixel-map-integrity": {
+          "score": 1,
+          "passed": true,
+          "detail": "5/5 comprobaciones OK"
+        },
+        "lua-emits-single-transaction": {
+          "score": 1,
+          "passed": true,
+          "detail": "5/5 comprobaciones OK"
+        }
+      },
+      "passed": true,
+      "spec": {
+        "name": "gem-hud-icon",
+        "kind": "sprite",
+        "canvas": {
+          "width": 16,
+          "height": 16
+        },
+        "paletteSize": 5,
+        "frameCount": 1,
+        "tags": [
+          "idle[0,0] forward"
+        ]
+      }
+    },
+    {
+      "caseId": "hero-walk-cycle",
+      "tags": [
+        "sprite",
+        "animacion",
+        "tags"
+      ],
+      "model": "claude-opus-5",
+      "source": "fixture",
+      "latencyMs": 17352,
+      "usage": {
+        "input_tokens": 41,
+        "output_tokens": 1736,
+        "cache_read_input_tokens": 1387,
+        "cache_creation_input_tokens": 0
+      },
+      "costUsd": 0.0442985,
+      "transportError": null,
+      "graders": {
+        "schema-valid": {
+          "score": 1,
+          "passed": true,
+          "detail": "válido: sprite 16x24, 6 frame(s), 7 color(es), 1 tag(s)"
+        },
+        "palette-constraint": {
+          "score": 1,
+          "passed": true,
+          "detail": "7 color(es), se pedía ≤ 12"
+        },
+        "canvas-constraint": {
+          "score": 1,
+          "passed": true,
+          "detail": "lienzo exacto 16x24"
+        },
+        "frame-tag-coherence": {
+          "score": 0.8333333333333334,
+          "passed": false,
+          "detail": "sin frames huérfanos: frame(s) fuera de todo tag: 5"
+        },
+        "pixel-map-integrity": {
+          "score": 1,
+          "passed": true,
+          "detail": "5/5 comprobaciones OK"
+        },
+        "lua-emits-single-transaction": {
+          "score": 1,
+          "passed": true,
+          "detail": "5/5 comprobaciones OK"
+        }
+      },
+      "passed": false,
+      "spec": {
+        "name": "hero-walk",
+        "kind": "sprite",
+        "canvas": {
+          "width": 16,
+          "height": 24
+        },
+        "paletteSize": 7,
+        "frameCount": 6,
+        "tags": [
+          "walk[0,4] forward"
+        ]
+      }
+    },
+    {
+      "caseId": "dungeon-tileset-3",
+      "tags": [
+        "tileset",
+        "adyacencia",
+        "paleta"
+      ],
+      "model": "claude-opus-5",
+      "source": "fixture",
+      "latencyMs": 12991,
+      "usage": {
+        "input_tokens": 62,
+        "output_tokens": 1113,
+        "cache_read_input_tokens": 1387,
+        "cache_creation_input_tokens": 0
+      },
+      "costUsd": 0.0288285,
+      "transportError": null,
+      "graders": {
+        "schema-valid": {
+          "score": 1,
+          "passed": true,
+          "detail": "válido: tileset 48x16, 1 frame(s), 6 color(es), 1 tag(s)"
+        },
+        "palette-constraint": {
+          "score": 1,
+          "passed": true,
+          "detail": "6 color(es), se pedía ≤ 6"
+        },
+        "canvas-constraint": {
+          "score": 1,
+          "passed": true,
+          "detail": "lienzo exacto 48x16"
+        },
+        "frame-tag-coherence": {
+          "score": 1,
+          "passed": true,
+          "detail": "5/5 comprobaciones OK"
+        },
+        "pixel-map-integrity": {
+          "score": 1,
+          "passed": true,
+          "detail": "5/5 comprobaciones OK"
+        },
+        "lua-emits-single-transaction": {
+          "score": 1,
+          "passed": true,
+          "detail": "5/5 comprobaciones OK"
+        }
+      },
+      "passed": true,
+      "spec": {
+        "name": "dungeon-tiles-3",
+        "kind": "tileset",
+        "canvas": {
+          "width": 48,
+          "height": 16
+        },
+        "paletteSize": 6,
+        "frameCount": 1,
+        "tags": [
+          "tiles[0,0] forward"
+        ]
+      }
+    },
+    {
+      "caseId": "ambiguous-creature",
+      "tags": [
+        "ambiguo",
+        "defaults"
+      ],
+      "model": "claude-opus-5",
+      "source": "fixture",
+      "latencyMs": 16085,
+      "usage": {
+        "input_tokens": 6,
+        "output_tokens": 1555,
+        "cache_read_input_tokens": 1387,
+        "cache_creation_input_tokens": 0
+      },
+      "costUsd": 0.0395985,
+      "transportError": null,
+      "graders": {
+        "schema-valid": {
+          "score": 1,
+          "passed": true,
+          "detail": "válido: sprite 32x32, 2 frame(s), 7 color(es), 1 tag(s)"
+        },
+        "palette-constraint": {
+          "score": 1,
+          "passed": true,
+          "detail": "7 color(es), se pedía ≤ 16"
+        },
+        "canvas-constraint": {
+          "score": 1,
+          "passed": true,
+          "detail": "2/2 comprobaciones OK"
+        },
+        "frame-tag-coherence": {
+          "score": 1,
+          "passed": true,
+          "detail": "6/6 comprobaciones OK"
+        },
+        "pixel-map-integrity": {
+          "score": 1,
+          "passed": true,
+          "detail": "5/5 comprobaciones OK"
+        },
+        "lua-emits-single-transaction": {
+          "score": 1,
+          "passed": true,
+          "detail": "5/5 comprobaciones OK"
+        }
+      },
+      "passed": true,
+      "spec": {
+        "name": "blob-creature",
+        "kind": "sprite",
+        "canvas": {
+          "width": 32,
+          "height": 32
+        },
+        "paletteSize": 7,
+        "frameCount": 2,
+        "tags": [
+          "idle[0,1] pingpong"
+        ]
+      }
+    },
+    {
+      "caseId": "exact-five-colors",
+      "tags": [
+        "sprite",
+        "paleta",
+        "restriccion-dura"
+      ],
+      "model": "claude-opus-5",
+      "source": "fixture",
+      "latencyMs": 11766,
+      "usage": {
+        "input_tokens": 35,
+        "output_tokens": 938,
+        "cache_read_input_tokens": 1387,
+        "cache_creation_input_tokens": 0
+      },
+      "costUsd": 0.0243185,
+      "transportError": null,
+      "graders": {
+        "schema-valid": {
+          "score": 1,
+          "passed": true,
+          "detail": "válido: sprite 16x16, 1 frame(s), 5 color(es), 1 tag(s)"
+        },
+        "palette-constraint": {
+          "score": 1,
+          "passed": true,
+          "detail": "5 color(es), se pedía exactamente 5"
+        },
+        "canvas-constraint": {
+          "score": 1,
+          "passed": true,
+          "detail": "lienzo exacto 16x16"
+        },
+        "frame-tag-coherence": {
+          "score": 1,
+          "passed": true,
+          "detail": "5/5 comprobaciones OK"
+        },
+        "pixel-map-integrity": {
+          "score": 1,
+          "passed": true,
+          "detail": "5/5 comprobaciones OK"
+        },
+        "lua-emits-single-transaction": {
+          "score": 1,
+          "passed": true,
+          "detail": "5/5 comprobaciones OK"
+        }
+      },
+      "passed": true,
+      "spec": {
+        "name": "mana-potion",
+        "kind": "sprite",
+        "canvas": {
+          "width": 16,
+          "height": 16
+        },
+        "paletteSize": 5,
+        "frameCount": 1,
+        "tags": [
+          "idle[0,0] forward"
+        ]
+      }
+    },
+    {
+      "caseId": "non-power-of-two-20",
+      "tags": [
+        "dimensiones",
+        "correccion"
+      ],
+      "model": "claude-opus-5",
+      "source": "fixture",
+      "latencyMs": 12669,
+      "usage": {
+        "input_tokens": 17,
+        "output_tokens": 1067,
+        "cache_read_input_tokens": 1387,
+        "cache_creation_input_tokens": 0
+      },
+      "costUsd": 0.0274535,
+      "transportError": null,
+      "graders": {
+        "schema-valid": {
+          "score": 1,
+          "passed": true,
+          "detail": "válido: sprite 24x24, 1 frame(s), 6 color(es), 1 tag(s)"
+        },
+        "palette-constraint": {
+          "score": 1,
+          "passed": true,
+          "detail": "6 color(es), se pedía ≤ 10"
+        },
+        "canvas-constraint": {
+          "score": 1,
+          "passed": true,
+          "detail": "2/2 comprobaciones OK"
+        },
+        "frame-tag-coherence": {
+          "score": 1,
+          "passed": true,
+          "detail": "5/5 comprobaciones OK"
+        },
+        "pixel-map-integrity": {
+          "score": 1,
+          "passed": true,
+          "detail": "5/5 comprobaciones OK"
+        },
+        "lua-emits-single-transaction": {
+          "score": 1,
+          "passed": true,
+          "detail": "5/5 comprobaciones OK"
+        }
+      },
+      "passed": true,
+      "spec": {
+        "name": "treasure-chest",
+        "kind": "sprite",
+        "canvas": {
+          "width": 24,
+          "height": 24
+        },
+        "paletteSize": 6,
+        "frameCount": 1,
+        "tags": [
+          "closed[0,0] forward"
+        ]
+      }
+    },
+    {
+      "caseId": "potion-icon-es",
+      "tags": [
+        "sprite",
+        "idioma",
+        "consistencia"
+      ],
+      "model": "claude-opus-5",
+      "source": "fixture",
+      "latencyMs": 11801,
+      "usage": {
+        "input_tokens": 31,
+        "output_tokens": 943,
+        "cache_read_input_tokens": 1387,
+        "cache_creation_input_tokens": 0
+      },
+      "costUsd": 0.024423499999999997,
+      "transportError": null,
+      "graders": {
+        "schema-valid": {
+          "score": 1,
+          "passed": true,
+          "detail": "válido: sprite 16x16, 1 frame(s), 5 color(es), 1 tag(s)"
+        },
+        "palette-constraint": {
+          "score": 1,
+          "passed": true,
+          "detail": "5 color(es), se pedía ≤ 8"
+        },
+        "canvas-constraint": {
+          "score": 1,
+          "passed": true,
+          "detail": "lienzo exacto 16x16"
+        },
+        "frame-tag-coherence": {
+          "score": 1,
+          "passed": true,
+          "detail": "5/5 comprobaciones OK"
+        },
+        "pixel-map-integrity": {
+          "score": 1,
+          "passed": true,
+          "detail": "5/5 comprobaciones OK"
+        },
+        "lua-emits-single-transaction": {
+          "score": 1,
+          "passed": true,
+          "detail": "5/5 comprobaciones OK"
+        }
+      },
+      "passed": true,
+      "spec": {
+        "name": "health-potion-icon",
+        "kind": "sprite",
+        "canvas": {
+          "width": 16,
+          "height": 16
+        },
+        "paletteSize": 5,
+        "frameCount": 1,
+        "tags": [
+          "idle[0,0] forward"
+        ]
+      }
+    },
+    {
+      "caseId": "potion-icon-en",
+      "tags": [
+        "sprite",
+        "idioma",
+        "consistencia"
+      ],
+      "model": "claude-opus-5",
+      "source": "fixture",
+      "latencyMs": 11801,
+      "usage": {
+        "input_tokens": 29,
+        "output_tokens": 943,
+        "cache_read_input_tokens": 1387,
+        "cache_creation_input_tokens": 0
+      },
+      "costUsd": 0.024413499999999998,
+      "transportError": null,
+      "graders": {
+        "schema-valid": {
+          "score": 1,
+          "passed": true,
+          "detail": "válido: sprite 16x16, 1 frame(s), 5 color(es), 1 tag(s)"
+        },
+        "palette-constraint": {
+          "score": 1,
+          "passed": true,
+          "detail": "5 color(es), se pedía ≤ 8"
+        },
+        "canvas-constraint": {
+          "score": 1,
+          "passed": true,
+          "detail": "lienzo exacto 16x16"
+        },
+        "frame-tag-coherence": {
+          "score": 1,
+          "passed": true,
+          "detail": "5/5 comprobaciones OK"
+        },
+        "pixel-map-integrity": {
+          "score": 1,
+          "passed": true,
+          "detail": "5/5 comprobaciones OK"
+        },
+        "lua-emits-single-transaction": {
+          "score": 1,
+          "passed": true,
+          "detail": "5/5 comprobaciones OK"
+        }
+      },
+      "passed": true,
+      "spec": {
+        "name": "health-potion-icon",
+        "kind": "sprite",
+        "canvas": {
+          "width": 16,
+          "height": 16
+        },
+        "paletteSize": 5,
+        "frameCount": 1,
+        "tags": [
+          "idle[0,0] forward"
+        ]
+      }
+    },
+    {
+      "caseId": "long-constraints-knight",
+      "tags": [
+        "sprite",
+        "restricciones-multiples",
+        "animacion",
+        "paleta"
+      ],
+      "model": "claude-opus-5",
+      "source": "fixture",
+      "latencyMs": 21097,
+      "usage": {
+        "input_tokens": 181,
+        "output_tokens": 2271,
+        "cache_read_input_tokens": 1387,
+        "cache_creation_input_tokens": 0
+      },
+      "costUsd": 0.0583735,
+      "transportError": null,
+      "graders": {
+        "schema-valid": {
+          "score": 1,
+          "passed": true,
+          "detail": "válido: sprite 32x32, 4 frame(s), 8 color(es), 2 tag(s)"
+        },
+        "palette-constraint": {
+          "score": 1,
+          "passed": true,
+          "detail": "8 color(es), se pedía exactamente 8"
+        },
+        "canvas-constraint": {
+          "score": 1,
+          "passed": true,
+          "detail": "lienzo exacto 32x32"
+        },
+        "frame-tag-coherence": {
+          "score": 1,
+          "passed": true,
+          "detail": "8/8 comprobaciones OK"
+        },
+        "pixel-map-integrity": {
+          "score": 1,
+          "passed": true,
+          "detail": "5/5 comprobaciones OK"
+        },
+        "lua-emits-single-transaction": {
+          "score": 1,
+          "passed": true,
+          "detail": "5/5 comprobaciones OK"
+        }
+      },
+      "passed": true,
+      "spec": {
+        "name": "knight-shield",
+        "kind": "sprite",
+        "canvas": {
+          "width": 32,
+          "height": 32
+        },
+        "paletteSize": 8,
+        "frameCount": 4,
+        "tags": [
+          "idle[0,1] forward",
+          "attack[2,3] pingpong"
+        ]
+      }
+    },
+    {
+      "caseId": "slime-idle-pingpong",
+      "tags": [
+        "sprite",
+        "animacion",
+        "ritmo"
+      ],
+      "model": "claude-opus-5",
+      "source": "fixture",
+      "latencyMs": 13845,
+      "usage": {
+        "input_tokens": 43,
+        "output_tokens": 1235,
+        "cache_read_input_tokens": 1387,
+        "cache_creation_input_tokens": 0
+      },
+      "costUsd": 0.0317835,
+      "transportError": null,
+      "graders": {
+        "schema-valid": {
+          "score": 1,
+          "passed": true,
+          "detail": "válido: sprite 16x16, 4 frame(s), 5 color(es), 1 tag(s)"
+        },
+        "palette-constraint": {
+          "score": 1,
+          "passed": true,
+          "detail": "5 color(es), se pedía ≤ 8"
+        },
+        "canvas-constraint": {
+          "score": 1,
+          "passed": true,
+          "detail": "lienzo exacto 16x16"
+        },
+        "frame-tag-coherence": {
+          "score": 1,
+          "passed": true,
+          "detail": "8/8 comprobaciones OK"
+        },
+        "pixel-map-integrity": {
+          "score": 1,
+          "passed": true,
+          "detail": "5/5 comprobaciones OK"
+        },
+        "lua-emits-single-transaction": {
+          "score": 1,
+          "passed": true,
+          "detail": "5/5 comprobaciones OK"
+        }
+      },
+      "passed": true,
+      "spec": {
+        "name": "green-slime",
+        "kind": "sprite",
+        "canvas": {
+          "width": 16,
+          "height": 16
+        },
+        "paletteSize": 5,
+        "frameCount": 4,
+        "tags": [
+          "idle[0,3] pingpong"
+        ]
+      }
+    },
+    {
+      "caseId": "coin-spin-four-colors",
+      "tags": [
+        "sprite",
+        "animacion",
+        "paleta",
+        "restriccion-dura"
+      ],
+      "model": "claude-opus-5",
+      "source": "fixture",
+      "latencyMs": 15259,
+      "usage": {
+        "input_tokens": 35,
+        "output_tokens": 1437,
+        "cache_read_input_tokens": 1387,
+        "cache_creation_input_tokens": 0
+      },
+      "costUsd": 0.0367935,
+      "transportError": null,
+      "graders": {
+        "schema-valid": {
+          "score": 1,
+          "passed": true,
+          "detail": "válido: sprite 16x16, 6 frame(s), 4 color(es), 1 tag(s)"
+        },
+        "palette-constraint": {
+          "score": 1,
+          "passed": true,
+          "detail": "4 color(es), se pedía exactamente 4"
+        },
+        "canvas-constraint": {
+          "score": 1,
+          "passed": true,
+          "detail": "lienzo exacto 16x16"
+        },
+        "frame-tag-coherence": {
+          "score": 1,
+          "passed": true,
+          "detail": "7/7 comprobaciones OK"
+        },
+        "pixel-map-integrity": {
+          "score": 1,
+          "passed": true,
+          "detail": "5/5 comprobaciones OK"
+        },
+        "lua-emits-single-transaction": {
+          "score": 1,
+          "passed": true,
+          "detail": "5/5 comprobaciones OK"
+        }
+      },
+      "passed": true,
+      "spec": {
+        "name": "gold-coin-spin",
+        "kind": "sprite",
+        "canvas": {
+          "width": 16,
+          "height": 16
+        },
+        "paletteSize": 4,
+        "frameCount": 6,
+        "tags": [
+          "spin[0,5] forward"
+        ]
+      }
+    },
+    {
+      "caseId": "mono-cursor-8",
+      "tags": [
+        "sprite",
+        "ui",
+        "paleta",
+        "restriccion-dura"
+      ],
+      "model": "claude-opus-5",
+      "source": "fixture",
+      "latencyMs": 11017,
+      "usage": {
+        "input_tokens": 27,
+        "output_tokens": 831,
+        "cache_read_input_tokens": 1387,
+        "cache_creation_input_tokens": 0
+      },
+      "costUsd": 0.021603499999999998,
+      "transportError": null,
+      "graders": {
+        "schema-valid": {
+          "score": 1,
+          "passed": true,
+          "detail": "válido: sprite 8x8, 1 frame(s), 2 color(es), 1 tag(s)"
+        },
+        "palette-constraint": {
+          "score": 1,
+          "passed": true,
+          "detail": "2 color(es), se pedía exactamente 2"
+        },
+        "canvas-constraint": {
+          "score": 1,
+          "passed": true,
+          "detail": "lienzo exacto 8x8"
+        },
+        "frame-tag-coherence": {
+          "score": 1,
+          "passed": true,
+          "detail": "5/5 comprobaciones OK"
+        },
+        "pixel-map-integrity": {
+          "score": 1,
+          "passed": true,
+          "detail": "5/5 comprobaciones OK"
+        },
+        "lua-emits-single-transaction": {
+          "score": 1,
+          "passed": true,
+          "detail": "5/5 comprobaciones OK"
+        }
+      },
+      "passed": true,
+      "spec": {
+        "name": "arrow-cursor",
+        "kind": "sprite",
+        "canvas": {
+          "width": 8,
+          "height": 8
+        },
+        "paletteSize": 2,
+        "frameCount": 1,
+        "tags": [
+          "default[0,0] forward"
+        ]
+      }
+    },
+    {
+      "caseId": "grass-tileset-32",
+      "tags": [
+        "tileset",
+        "adyacencia",
+        "paleta"
+      ],
+      "model": "claude-opus-5",
+      "source": "fixture",
+      "latencyMs": 13600,
+      "usage": {
+        "input_tokens": 59,
+        "output_tokens": 1200,
+        "cache_read_input_tokens": 1387,
+        "cache_creation_input_tokens": 0
+      },
+      "costUsd": 0.0309885,
+      "transportError": null,
+      "graders": {
+        "schema-valid": {
+          "score": 1,
+          "passed": true,
+          "detail": "válido: tileset 32x32, 1 frame(s), 6 color(es), 1 tag(s)"
+        },
+        "palette-constraint": {
+          "score": 1,
+          "passed": true,
+          "detail": "6 color(es), se pedía ≤ 6"
+        },
+        "canvas-constraint": {
+          "score": 1,
+          "passed": true,
+          "detail": "lienzo exacto 32x32"
+        },
+        "frame-tag-coherence": {
+          "score": 1,
+          "passed": true,
+          "detail": "5/5 comprobaciones OK"
+        },
+        "pixel-map-integrity": {
+          "score": 1,
+          "passed": true,
+          "detail": "5/5 comprobaciones OK"
+        },
+        "lua-emits-single-transaction": {
+          "score": 1,
+          "passed": true,
+          "detail": "5/5 comprobaciones OK"
+        }
+      },
+      "passed": true,
+      "spec": {
+        "name": "grass-tiles-2x2",
+        "kind": "tileset",
+        "canvas": {
+          "width": 32,
+          "height": 32
+        },
+        "paletteSize": 6,
+        "frameCount": 1,
+        "tags": [
+          "tiles[0,0] forward"
+        ]
+      }
+    }
+  ],
+  "graders": [
+    {
+      "graderId": "schema-valid",
+      "mean": 1,
+      "min": 1,
+      "cases": 13,
+      "failedCases": [],
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "graderId": "palette-constraint",
+      "mean": 1,
+      "min": 1,
+      "cases": 13,
+      "failedCases": [],
+      "threshold": 0.9,
+      "passed": true
+    },
+    {
+      "graderId": "canvas-constraint",
+      "mean": 1,
+      "min": 1,
+      "cases": 13,
+      "failedCases": [],
+      "threshold": 0.9,
+      "passed": true
+    },
+    {
+      "graderId": "frame-tag-coherence",
+      "mean": 0.9871794871794872,
+      "min": 0.8333333333333334,
+      "cases": 13,
+      "failedCases": [
+        "hero-walk-cycle"
+      ],
+      "threshold": 0.9,
+      "passed": true
+    },
+    {
+      "graderId": "pixel-map-integrity",
+      "mean": 1,
+      "min": 1,
+      "cases": 13,
+      "failedCases": [],
+      "threshold": 1,
+      "passed": true
+    },
+    {
+      "graderId": "lua-emits-single-transaction",
+      "mean": 1,
+      "min": 1,
+      "cases": 13,
+      "failedCases": [],
+      "threshold": 1,
+      "passed": true
+    }
+  ],
+  "runGraders": [
+    {
+      "graderId": "latency-budget",
+      "score": 1,
+      "passed": true,
+      "detail": "p95 18850 ms sobre 13 caso(s), presupuesto 45000 ms"
+    },
+    {
+      "graderId": "cost-budget",
+      "score": 1,
+      "passed": true,
+      "detail": "$0.0321 por sprite sobre 13 caso(s), presupuesto $0.1500"
+    },
+    {
+      "graderId": "cross-language-consistency",
+      "score": 1,
+      "passed": true,
+      "detail": "4/4 comprobaciones OK"
+    }
+  ],
+  "failures": [],
+  "regressions": []
+}

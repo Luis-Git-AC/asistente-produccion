@@ -1,0 +1,14 @@
+{
+  "id": "dungeon-tileset-3",
+  "prompt": "Tileset de mazmorra: tres tiles de 16x16 en una tira horizontal de 48x16 — suelo de piedra, muro y esquina de muro. Los bordes que se tocan tienen que encajar entre sí sin costura visible al repetirlos. Máximo 6 colores.",
+  "tags": ["tileset", "adyacencia", "paleta"],
+  "notes": "La restricción de adyacencia no es verificable sin renderizar, así que se mide lo que sí es determinista: kind tileset, lienzo múltiplo del tile, paleta acotada y lienzo lleno (un tileset con huecos transparentes no alicata).",
+  "expectations": {
+    "kind": "tileset",
+    "canvas": { "width": 48, "height": 16 },
+    "palette": { "max": 6 },
+    "frames": { "exact": 1 },
+    "tags": { "min": 1 },
+    "minOpaqueRatio": 0.95
+  }
+}

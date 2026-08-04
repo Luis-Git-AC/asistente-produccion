@@ -1,0 +1,17 @@
+{
+  "id": "long-constraints-knight",
+  "prompt": "Sprite de un caballero con escudo para un juego de acción 2D con cámara lateral. Lienzo de 32x32. Paleta de exactamente 8 colores: un contorno oscuro, tres valores (base, sombra y luz) para la armadura, dos para el escudo y un acento cálido para el penacho, más un tono de piel. Cuatro frames en total: los dos primeros forman un tag \"idle\" en dirección forward y los dos siguientes un tag \"attack\" en pingpong. Las duraciones no pueden ser todas iguales — el frame de impacto tiene que durar menos que el de reposo. Ningún frame puede quedarse fuera de un tag. Exporta el spritesheet en filas con 2 píxeles de padding y genera el JSON de metadatos.",
+  "tags": ["sprite", "restricciones-multiples", "animacion", "paleta"],
+  "notes": "Prompt largo con ocho restricciones simultáneas. Mide si el sistema mantiene todas a la vez o si empieza a soltar las últimas cuando el contexto se alarga.",
+  "expectations": {
+    "kind": "sprite",
+    "canvas": { "width": 32, "height": 32 },
+    "palette": { "exact": 8 },
+    "frames": { "exact": 4 },
+    "tags": { "exact": 2 },
+    "tagDirections": ["forward", "pingpong"],
+    "distinctFrameDurations": true,
+    "noOrphanFrames": true,
+    "minOpaqueRatio": 0.1
+  }
+}

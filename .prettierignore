@@ -6,3 +6,5 @@ coverage
 output
 data
 package-lock.json
+evals/reports
+evals/fixtures

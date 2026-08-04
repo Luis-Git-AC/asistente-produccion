@@ -1,0 +1,20 @@
+{
+  "name": "@asistente/evals",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@asistente/mcp-aseprite": "*",
+    "@asistente/server": "*",
+    "@asistente/shared": "*",
+    "luaparse": "^0.3.1",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@types/luaparse": "^0.2.13"
+  }
+}

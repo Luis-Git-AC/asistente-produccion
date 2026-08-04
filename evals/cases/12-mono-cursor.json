@@ -1,0 +1,14 @@
+{
+  "id": "mono-cursor-8",
+  "prompt": "Cursor de ratón en flecha para la UI, 8x8, exactamente 2 colores: relleno claro y contorno negro.",
+  "tags": ["sprite", "ui", "paleta", "restriccion-dura"],
+  "notes": "El lienzo más pequeño de la suite. A 8x8 el sistema no tiene sitio para esconder relleno: o la silueta se lee o no se lee.",
+  "expectations": {
+    "kind": "sprite",
+    "canvas": { "width": 8, "height": 8 },
+    "palette": { "exact": 2 },
+    "frames": { "exact": 1 },
+    "tags": { "min": 1 },
+    "minOpaqueRatio": 0.2
+  }
+}

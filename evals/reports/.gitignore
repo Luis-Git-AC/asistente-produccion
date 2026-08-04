@@ -1,0 +1,5 @@
+# Los informes son artefactos de una corrida concreta: se generan en cada `npm run evals` y no
+# tienen por qué vivir en el historial. Se versiona sólo `example-run.json`, para que se pueda
+# ver la forma del informe sin ejecutar nada.
+*.json
+!example-run.json

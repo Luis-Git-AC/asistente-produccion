@@ -1,0 +1,16 @@
+{
+  "caseId": "slime-idle-pingpong",
+  "model": "claude-opus-5",
+  "servedByModel": "claude-opus-5",
+  "promptSha256": "02df95d2b6af9ec7998594348af5f3b221fb013cc0b731d51f43a0d451aa4b52",
+  "origin": "synthetic-seed",
+  "recordedAt": "2026-08-04T00:00:00.000Z",
+  "latencyMs": 13845,
+  "usage": {
+    "input_tokens": 43,
+    "output_tokens": 1235,
+    "cache_read_input_tokens": 1387,
+    "cache_creation_input_tokens": 0
+  },
+  "responseText": "{\"schemaVersion\":\"1.0.0\",\"kind\":\"sprite\",\"name\":\"green-slime\",\"canvas\":{\"width\":16,\"height\":16},\"palette\":[{\"token\":\"o\",\"hex\":\"#101a12\",\"role\":\"outline\"},{\"token\":\"b\",\"hex\":\"#54c15a\",\"role\":\"base\"},{\"token\":\"s\",\"hex\":\"#2c7a37\",\"role\":\"shadow\"},{\"token\":\"h\",\"hex\":\"#b6f2a8\",\"role\":\"highlight\"},{\"token\":\"e\",\"hex\":\"#12200f\",\"role\":\"accent\"}],\"shapeLanguage\":{\"dominantShape\":\"circle\",\"silhouette\":\"cúpula apoyada en una base plana; el ancho constante y la altura variable dan la sensación de respiración\",\"readabilityNotes\":\"el brillo fijo en la parte superior izquierda ancla la forma mientras el cuerpo se comprime\",\"valueStructure\":3},\"frames\":[{\"index\":0,\"durationMs\":220,\"pixels\":[\"................\",\"................\",\"................\",\"................\",\"................\",\".......ooo......\",\"....ooobbbooo...\",\"...obhhhbbbbbo..\",\"...ohhhhhbbbbo..\",\"..obbhhhbbbbbbo.\",\"..obbsesssesbbo.\",\"..obsssssssssbo.\",\"...ossssssssso..\",\"....ossssssso...\",\".....ooooooo....\",\"................\"]},{\"index\":1,\"durationMs\":160,\"pixels\":[\"................\",\"................\",\"................\",\"................\",\"......ooooo.....\",\"....oobbbbboo...\",\"...obhhhbbbbbo..\",\"...ohhhhhbbbbo..\",\"..obhhhhhbbbbbo.\",\"..obbsesssesbbo.\",\"..obsssssssssbo.\",\"..ossssssssssso.\",\"...ossssssssso..\",\"....oosssssoo...\",\"......ooooo.....\",\"................\"]},{\"index\":2,\"durationMs\":200,\"pixels\":[\"................\",\"................\",\"................\",\"................\",\"................\",\".....ooooooo....\",\"....obbbbbbbo...\",\"...ohhhhhbbbbo..\",\"..obhhhhhbbbbbo.\",\"..obbhhhbbbbbbo.\",\"..obssesssessbo.\",\"..ossssssssssso.\",\"...ossssssssso..\",\"....ossssssso...\",\".....ooooooo....\",\"................\"]},{\"index\":3,\"durationMs\":260,\"pixels\":[\"................\",\"................\",\"................\",\"................\",\"................\",\"................\",\"......ooooo.....\",\"....oohhbbboo...\",\"...ohhhhhbbbbo..\",\"..obhhhhhbbbbbo.\",\"..obbbebbbebbbo.\",\"..obsssssssssbo.\",\"..ossssssssssso.\",\"...ossssssssso..\",\"....ooooooooo...\",\"................\"]}],\"tags\":[{\"name\":\"idle\",\"from\":0,\"to\":3,\"direction\":\"pingpong\"}],\"export\":{\"spritesheetLayout\":\"rows\",\"padding\":0,\"generateJson\":true}}"
+}

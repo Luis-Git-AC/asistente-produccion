@@ -1,0 +1,16 @@
+{
+  "id": "coin-spin-four-colors",
+  "prompt": "Moneda de oro girando sobre su eje vertical, 16x16, 6 frames en dirección forward bajo un tag \"spin\", exactamente 4 colores.",
+  "tags": ["sprite", "animacion", "paleta", "restriccion-dura"],
+  "notes": "Cruza dos restricciones duras que tiran en direcciones opuestas: 6 frames de giro con sólo 4 colores obliga a resolver el volumen con silueta y no con degradado.",
+  "expectations": {
+    "kind": "sprite",
+    "canvas": { "width": 16, "height": 16 },
+    "palette": { "exact": 4 },
+    "frames": { "exact": 6 },
+    "tags": { "exact": 1 },
+    "tagDirections": ["forward"],
+    "noOrphanFrames": true,
+    "minOpaqueRatio": 0.05
+  }
+}

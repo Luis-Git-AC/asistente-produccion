@@ -1,0 +1,16 @@
+{
+  "caseId": "dungeon-tileset-3",
+  "model": "claude-opus-5",
+  "servedByModel": "claude-opus-5",
+  "promptSha256": "0d53cebfb7e96372789c34675d42a9a4fccdb1de54c955080ff48e748e7e9dfd",
+  "origin": "synthetic-seed",
+  "recordedAt": "2026-08-04T00:00:00.000Z",
+  "latencyMs": 12991,
+  "usage": {
+    "input_tokens": 62,
+    "output_tokens": 1113,
+    "cache_read_input_tokens": 1387,
+    "cache_creation_input_tokens": 0
+  },
+  "responseText": "{\"schemaVersion\":\"1.0.0\",\"kind\":\"tileset\",\"name\":\"dungeon-tiles-3\",\"canvas\":{\"width\":48,\"height\":16},\"palette\":[{\"token\":\"f\",\"hex\":\"#5a5468\",\"role\":\"base\"},{\"token\":\"d\",\"hex\":\"#3a3547\",\"role\":\"shadow\"},{\"token\":\"h\",\"hex\":\"#7d768e\",\"role\":\"highlight\"},{\"token\":\"w\",\"hex\":\"#6b5a4a\",\"role\":\"base\"},{\"token\":\"m\",\"hex\":\"#4a3d33\",\"role\":\"shadow\"},{\"token\":\"o\",\"hex\":\"#221d2c\",\"role\":\"outline\"}],\"shapeLanguage\":{\"dominantShape\":\"square\",\"silhouette\":\"tira de tres tiles cuadrados de 16x16: suelo, muro y esquina; los bordes contiguos comparten valor para que no se vea la junta\",\"readabilityNotes\":\"el muro es más cálido y oscuro que el suelo, así que la silueta del nivel se lee de un vistazo aunque los tres tiles se alicaten\",\"valueStructure\":3},\"frames\":[{\"index\":0,\"durationMs\":100,\"pixels\":[\"ffffffffffffdfffmmmmmmmmmmmmmmmmfffffdffdfhffffd\",\"fffdfffdfdffdfffmdwwwwwwwwdwwwwwdfffhfhffddhfffd\",\"hhdffdffffffffffmwwwwwwwwwwwwwwwfdfffffffffhfffd\",\"fffffffffhffffdhmwwwwwwwwwwwwwwwhfhfffffffffdfhf\",\"hffddffffddffffdmwwwwwwwwwwwwwwwfffffhhfffffdfff\",\"fdhfffhfffffffffmmmmmmmmmmmmmmmmffhffffhffdffhff\",\"fffffdfdffhhfhddwwwwwdwwmwwwwwdwfhhhffoooooooooo\",\"fffffhffffdffhffwwwwwwwwmwwwwwwwdffhffowwwwwwwmw\",\"ffffffhfhfhffdffwwwwwwwwmwwwwwwwfffffdowwwwwwwmw\",\"dffffffffffhfdhhwwwwwwwwmwwwwwwwhfffhfowwwwwwwmw\",\"hffffhffffdfhfffmmmmmmmmmmmmmmmmhfffffowwwwwwwmw\",\"fffddhffffffffffdwwwwwwwwdwwwwwwffdhffommmmmmmmm\",\"ffhfffhffffdffffmwwwwwwwwwwwwwwwhfffffowwwwwwwmw\",\"fhfhhffhfffffhffmwwwwwwwwwwwwwwwffhddfowwwwwwwmw\",\"fffffffdhfffddffmwwwwwwwwwwwwwwwdffhffowwwwwwwmw\",\"fdddfdfffffffffhmmmmmmmmmmmmmmmmfhffdfowwwwwwwmw\"]}],\"tags\":[{\"name\":\"tiles\",\"from\":0,\"to\":0,\"direction\":\"forward\"}],\"export\":{\"spritesheetLayout\":\"rows\",\"padding\":0,\"generateJson\":true}}"
+}

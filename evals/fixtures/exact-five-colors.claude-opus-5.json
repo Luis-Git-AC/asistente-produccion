@@ -1,0 +1,16 @@
+{
+  "caseId": "exact-five-colors",
+  "model": "claude-opus-5",
+  "servedByModel": "claude-opus-5",
+  "promptSha256": "1420f8eebb4c71c5be2ed061cd358fdcb80dc8ce26d3c75c0a3781a61d60b981",
+  "origin": "synthetic-seed",
+  "recordedAt": "2026-08-04T00:00:00.000Z",
+  "latencyMs": 11766,
+  "usage": {
+    "input_tokens": 35,
+    "output_tokens": 938,
+    "cache_read_input_tokens": 1387,
+    "cache_creation_input_tokens": 0
+  },
+  "responseText": "{\"schemaVersion\":\"1.0.0\",\"kind\":\"sprite\",\"name\":\"mana-potion\",\"canvas\":{\"width\":16,\"height\":16},\"palette\":[{\"token\":\"o\",\"hex\":\"#141024\",\"role\":\"outline\"},{\"token\":\"b\",\"hex\":\"#3b6ee0\",\"role\":\"base\"},{\"token\":\"s\",\"hex\":\"#22417f\",\"role\":\"shadow\"},{\"token\":\"h\",\"hex\":\"#b7cdff\",\"role\":\"highlight\"},{\"token\":\"g\",\"hex\":\"#8fa4c8\",\"role\":\"accent\"}],\"shapeLanguage\":{\"dominantShape\":\"circle\",\"silhouette\":\"frasco de cuello estrecho y cuerpo redondo; el cuello marca la silueta contra cualquier fondo\",\"readabilityNotes\":\"cinco colores exactos: contorno, líquido, su sombra, un brillo de un píxel y el cristal del cuello, todos visibles en el sprite\",\"valueStructure\":3},\"frames\":[{\"index\":0,\"durationMs\":100,\"pixels\":[\"................\",\"................\",\".....oooooo.....\",\"......oggo......\",\"......oggo......\",\"......oggo......\",\"......ogggo.....\",\".....ogggggo....\",\"....obbbbbbbo...\",\"....ohhbbbbbo...\",\"...obhbbbbbbbo..\",\"....obbbbbsso...\",\"....obbbbbsso...\",\".....obbbbso....\",\"......ooooo.....\",\"................\"]}],\"tags\":[{\"name\":\"idle\",\"from\":0,\"to\":0,\"direction\":\"forward\"}],\"export\":{\"spritesheetLayout\":\"rows\",\"padding\":0,\"generateJson\":true}}"
+}

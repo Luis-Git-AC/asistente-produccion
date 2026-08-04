@@ -1,0 +1,16 @@
+{
+  "caseId": "non-power-of-two-20",
+  "model": "claude-opus-5",
+  "servedByModel": "claude-opus-5",
+  "promptSha256": "8a42d3656f1c4f7e514ea362fb0dd0a3e73b110dec7c804d6f8fbf4ba05c44b8",
+  "origin": "synthetic-seed",
+  "recordedAt": "2026-08-04T00:00:00.000Z",
+  "latencyMs": 12669,
+  "usage": {
+    "input_tokens": 17,
+    "output_tokens": 1067,
+    "cache_read_input_tokens": 1387,
+    "cache_creation_input_tokens": 0
+  },
+  "responseText": "{\"schemaVersion\":\"1.0.0\",\"kind\":\"sprite\",\"name\":\"treasure-chest\",\"canvas\":{\"width\":24,\"height\":24},\"palette\":[{\"token\":\"o\",\"hex\":\"#181119\",\"role\":\"outline\"},{\"token\":\"w\",\"hex\":\"#8a5a34\",\"role\":\"base\"},{\"token\":\"d\",\"hex\":\"#553520\",\"role\":\"shadow\"},{\"token\":\"l\",\"hex\":\"#b9834c\",\"role\":\"highlight\"},{\"token\":\"m\",\"hex\":\"#c9a227\",\"role\":\"accent\"},{\"token\":\"k\",\"hex\":\"#f2dd8a\",\"role\":\"highlight\"}],\"shapeLanguage\":{\"dominantShape\":\"square\",\"silhouette\":\"caja con tapa diferenciada y dos bandas metálicas verticales; la silueta rectangular se lee como cofre sin abrirlo\",\"readabilityNotes\":\"24x24 en vez de los 20x20 pedidos: 20 no es potencia de dos ni múltiplo de 8, así que se sube al múltiplo de 8 más cercano en vez de romper el spec\",\"valueStructure\":4},\"frames\":[{\"index\":0,\"durationMs\":100,\"pixels\":[\"........................\",\"........................\",\"........................\",\"........................\",\"........................\",\"........................\",\"...oooooooooooooooooo...\",\"...ollmmllllllllmmllo...\",\"...ollmmllllllllmmllo...\",\"...ollmmllllllllmmllo...\",\"...ollmmlllkklllmmllo...\",\"...ollmmlllkklllmmllo...\",\"...owwmmwwwddwwwmmwwo...\",\"...owwmmwwwkkwwwmmwwo...\",\"...owwmmwwwkkwwwmmwwo...\",\"...owwmmwwwwwwwwmmwwo...\",\"...owwmmwwwwwwwwmmwwo...\",\"...owwmmwwwwwwwwmmwwo...\",\"...oddmmddddddddmmddo...\",\"...oddmmddddddddmmddo...\",\"...oooooooooooooooooo...\",\"........................\",\"........................\",\"........................\"]}],\"tags\":[{\"name\":\"closed\",\"from\":0,\"to\":0,\"direction\":\"forward\"}],\"export\":{\"spritesheetLayout\":\"rows\",\"padding\":0,\"generateJson\":true}}"
+}

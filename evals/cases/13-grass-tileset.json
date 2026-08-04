@@ -1,0 +1,14 @@
+{
+  "id": "grass-tileset-32",
+  "prompt": "Tileset de hierba de 32x32 con cuatro tiles de 16x16 dispuestos en una rejilla 2x2. Los cuatro tienen que poder alicatarse en cualquier orden y en cualquier dirección sin que se vea la junta. Máximo 6 colores.",
+  "tags": ["tileset", "adyacencia", "paleta"],
+  "notes": "Segundo caso de tileset, con rejilla 2x2 en vez de tira: comprueba que la restricción de adyacencia no se resuelve sólo cuando los tiles van en fila.",
+  "expectations": {
+    "kind": "tileset",
+    "canvas": { "width": 32, "height": 32 },
+    "palette": { "max": 6 },
+    "frames": { "exact": 1 },
+    "tags": { "min": 1 },
+    "minOpaqueRatio": 0.95
+  }
+}

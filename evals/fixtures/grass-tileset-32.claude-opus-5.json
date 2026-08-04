@@ -1,0 +1,16 @@
+{
+  "caseId": "grass-tileset-32",
+  "model": "claude-opus-5",
+  "servedByModel": "claude-opus-5",
+  "promptSha256": "4a580478eabb5d2841a865f133e62f28a46daef8e9bdb3bd43a4bf9a3f6030b3",
+  "origin": "synthetic-seed",
+  "recordedAt": "2026-08-04T00:00:00.000Z",
+  "latencyMs": 13600,
+  "usage": {
+    "input_tokens": 59,
+    "output_tokens": 1200,
+    "cache_read_input_tokens": 1387,
+    "cache_creation_input_tokens": 0
+  },
+  "responseText": "{\"schemaVersion\":\"1.0.0\",\"kind\":\"tileset\",\"name\":\"grass-tiles-2x2\",\"canvas\":{\"width\":32,\"height\":32},\"palette\":[{\"token\":\"g\",\"hex\":\"#4c8b3a\",\"role\":\"base\"},{\"token\":\"d\",\"hex\":\"#31612a\",\"role\":\"shadow\"},{\"token\":\"l\",\"hex\":\"#6fb04a\",\"role\":\"highlight\"},{\"token\":\"y\",\"hex\":\"#c3d05a\",\"role\":\"accent\"},{\"token\":\"b\",\"hex\":\"#6b5334\",\"role\":\"accent\"},{\"token\":\"o\",\"hex\":\"#1f3a1c\",\"role\":\"outline\"}],\"shapeLanguage\":{\"dominantShape\":\"square\",\"silhouette\":\"rejilla 2x2 de tiles de 16x16 sin borde propio: la textura es continua en los cuatro cantos para que alicaten en cualquier orden\",\"readabilityNotes\":\"el ruido no forma agrupaciones mayores de dos píxeles, así que al repetir el tile no aparece un patrón reconocible\",\"valueStructure\":3},\"frames\":[{\"index\":0,\"durationMs\":100,\"pixels\":[\"glgbgglgggglgdylgdgggyggggggdggg\",\"ggggggdodgggglggggggggggdgggdggg\",\"ggggggglgggggbgdgggyggggggdggggg\",\"dlgggggdgggggbggggggglggggglgggg\",\"glggdddgddgggglggdldggggggldodgg\",\"ggglgggggdggggglggggggggggggggll\",\"ggldogggdggggggglggggggdgglggggg\",\"yllglgggglglglggdogggggggggggggg\",\"gggglgglglgggbgdgglgdglgllgggggg\",\"gggglgddgggggggggdgggdggdolggdgg\",\"ggggggggggggdgggdggggggddggggglg\",\"gggggggdgggggllgglgddglgdggggggg\",\"ggdgggggggggldolgggggggggggggdgg\",\"bggggggggggglggggggggggblggggdgg\",\"lglgggglggggglggdgglgyglgdgggggg\",\"dgdoglggglgggbgglgggyggggddgggdg\",\"gggggggdggllygldlggygdgllgygdggg\",\"ggggggggdgdogggggllglgggdgdglggg\",\"gggglggggggggggdggggggggglgggggl\",\"ggdggggggggggglgglgggggggggggggl\",\"gyggglgggggddggggggggggggglgglgd\",\"gggggdglggggggggggdggggdggdggggg\",\"glggggggllgggggldggglgggdggdgdgd\",\"gggggggggggggdggggggdodggggggggl\",\"glgdlggggggggdggggggggggggggggld\",\"ggggglggglyggggggggggglgdggggggg\",\"ggbggggggdogdbggbggbgdgggglggggd\",\"lgggggggggdgggggglddglggggbggggg\",\"ygglgdgggggglggggdodlggggggggggg\",\"ggggggggggldgggggggldglggggggggg\",\"gggggggdggdgyggggggyggglldlggggg\",\"gdggggggdggyggllgglgggdgggdgldgg\"]}],\"tags\":[{\"name\":\"tiles\",\"from\":0,\"to\":0,\"direction\":\"forward\"}],\"export\":{\"spritesheetLayout\":\"rows\",\"padding\":0,\"generateJson\":true}}"
+}

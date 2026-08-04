@@ -1,0 +1,15 @@
+{
+  "id": "hero-walk-cycle",
+  "prompt": "Ciclo de caminata de un héroe de plataformas visto de lado, lienzo de 16x24, entre 4 y 8 frames, con un tag \"walk\" que cubra la animación completa.",
+  "tags": ["sprite", "animacion", "tags"],
+  "notes": "Mide la parte de animación: número de frames dentro del rango y tags que cubran TODOS los frames. Un frame fuera del tag es válido para el schema pero inalcanzable desde el Animator de Unity.",
+  "expectations": {
+    "kind": "sprite",
+    "canvas": { "width": 16, "height": 24 },
+    "palette": { "max": 12 },
+    "frames": { "min": 4, "max": 8 },
+    "tags": { "min": 1 },
+    "noOrphanFrames": true,
+    "minOpaqueRatio": 0.1
+  }
+}

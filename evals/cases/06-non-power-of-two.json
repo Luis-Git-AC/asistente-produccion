@@ -1,0 +1,15 @@
+{
+  "id": "non-power-of-two-20",
+  "prompt": "Un cofre del tesoro cerrado en un lienzo de 20x20 píxeles.",
+  "tags": ["dimensiones", "correccion"],
+  "notes": "20 no es potencia de 2 ni múltiplo de 8, así que el schema lo rechaza. La respuesta correcta es corregir a un lienzo cercano y utilizable (16x16 o 24x24), no devolver 20x20 y fallar la validación, ni inventarse un 64x64 que no tiene nada que ver con lo pedido.",
+  "expectations": {
+    "kind": "sprite",
+    "canvasMultipleOf": 8,
+    "canvasMax": { "width": 32, "height": 32 },
+    "palette": { "max": 10 },
+    "frames": { "exact": 1 },
+    "tags": { "min": 1 },
+    "minOpaqueRatio": 0.1
+  }
+}

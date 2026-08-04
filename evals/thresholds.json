@@ -1,0 +1,16 @@
+{
+  "graders": {
+    "schema-valid": 1.0,
+    "palette-constraint": 0.9,
+    "canvas-constraint": 0.9,
+    "frame-tag-coherence": 0.9,
+    "pixel-map-integrity": 1.0,
+    "lua-emits-single-transaction": 1.0,
+    "cross-language-consistency": 1.0
+  },
+  "budgets": {
+    "latencyP95Ms": 45000,
+    "costPerSpriteUsd": 0.15
+  },
+  "minCasePassRate": 0.85
+}

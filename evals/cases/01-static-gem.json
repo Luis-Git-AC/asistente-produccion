@@ -1,0 +1,15 @@
+{
+  "id": "static-gem-16",
+  "prompt": "Un icono de gema para el HUD de un RPG, lienzo de 16x16, silueta legible a tamaño real y como mucho 8 colores.",
+  "tags": ["sprite", "estatico", "paleta"],
+  "notes": "Caso base: lo más simple que el sistema tiene que clavar. Si este falla, no hace falta mirar el resto.",
+  "expectations": {
+    "kind": "sprite",
+    "canvas": { "width": 16, "height": 16 },
+    "palette": { "max": 8 },
+    "frames": { "exact": 1 },
+    "tags": { "min": 1 },
+    "noOrphanFrames": true,
+    "minOpaqueRatio": 0.1
+  }
+}
