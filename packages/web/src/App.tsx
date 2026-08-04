@@ -8,7 +8,9 @@ import { SpecStream } from "./components/SpecStream/SpecStream.js";
 import { SpritePreview } from "./components/SpritePreview/SpritePreview.js";
 import { StageTimeline } from "./components/StageTimeline/StageTimeline.js";
 import { ThemeToggle } from "./components/ThemeToggle/ThemeToggle.js";
+import { Dashboard } from "./dashboard/Dashboard.js";
 import { useGeneration } from "./hooks/useGeneration.js";
+import { useHashRoute } from "./hooks/useHashRoute.js";
 
 const STATUS_TEXT: Record<string, string> = {
   idle: "listo",
@@ -21,6 +23,7 @@ const STATUS_TEXT: Record<string, string> = {
 
 export function App() {
   const { state, isBusy, generate, cancel, reset } = useGeneration();
+  const [route, navigate] = useHashRoute();
   const hasStarted = state.status !== "idle";
 
   const retry = (): void => {
@@ -38,12 +41,46 @@ export function App() {
           <span className={styles.brandTitle}>Asistente de producción 2D</span>
           <span className={styles.brandSub}>sprite spec → aseprite</span>
         </div>
+        <nav className={styles.nav} aria-label="Secciones">
+          <button
+            type="button"
+            className={clsx(styles.navLink, route === "generar" && styles.navLinkActive)}
+            aria-current={route === "generar" ? "page" : undefined}
+            onClick={() => {
+              navigate("generar");
+            }}
+          >
+            Generar
+          </button>
+          <button
+            type="button"
+            className={clsx(styles.navLink, route === "panel" && styles.navLinkActive)}
+            aria-current={route === "panel" ? "page" : undefined}
+            onClick={() => {
+              navigate("panel");
+            }}
+          >
+            Panel
+          </button>
+        </nav>
         <div className={styles.headerActions}>
           <ThemeToggle />
         </div>
       </header>
 
-      <main className={styles.main} id="contenido">
+      {route === "panel" ? (
+        <main className={styles.main} id="contenido">
+          <div className={styles.intro}>
+            <h1 className={styles.title}>Coste, tokens y latencia</h1>
+            <p className={styles.subtitle}>
+              Telemetría real de cada generación: cuánto cuesta un sprite, dónde se va el tiempo y
+              qué está ahorrando el prompt caching.
+            </p>
+          </div>
+          <Dashboard />
+        </main>
+      ) : (
+        <main className={styles.main} id="contenido">
         <div className={styles.intro}>
           <h1 className={styles.title}>Describe un sprite. Recíbelo en Aseprite.</h1>
           <p className={styles.subtitle}>
@@ -119,7 +156,8 @@ export function App() {
             </div>
           </>
         )}
-      </main>
+        </main>
+      )}
     </div>
   );
 }

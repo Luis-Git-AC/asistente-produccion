@@ -178,11 +178,15 @@ export class SqliteMetricsRepository implements MetricsRepository {
     const now = options.now ?? this.#now();
     const since = now - options.windowMs;
 
+    // La ventana está acotada por ARRIBA además de por abajo. Sin la cota superior, pedir la
+    // ventana anterior (`now: since`) devolvía también la actual y los deltas salían mal.
     const rows = this.#db
-      .prepare<[number], MetricsRow>(
-        `SELECT * FROM request_metrics WHERE created_at >= ? ORDER BY created_at ASC`,
+      .prepare<[number, number], MetricsRow>(
+        `SELECT * FROM request_metrics
+         WHERE created_at >= ? AND created_at <= ?
+         ORDER BY created_at ASC`,
       )
-      .all(since)
+      .all(since, now)
       .map(rowToMetrics);
 
     const empty: MetricsAggregate = {

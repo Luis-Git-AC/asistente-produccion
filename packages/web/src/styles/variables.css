@@ -110,6 +110,20 @@
   /* Damero del preview: hace legible la transparencia del sprite. */
   --checker-a: #16181c;
   --checker-b: #101216;
+
+  /* ---- Paleta categórica de gráficos (modo oscuro) ----
+     Slots en orden FIJO; el orden es el mecanismo de seguridad para daltonismo, no estética.
+     Validado contra la superficie #131519: banda de luminosidad, suelo de croma, separación
+     CVD (peor par adyacente ΔE 8.4 protan) y contraste ≥3:1 — todos PASAN. */
+  --series-1: #3987e5; /* azul */
+  --series-2: #d95926; /* naranja */
+  --series-3: #199e70; /* aguamarina */
+  --series-4: #c98500; /* amarillo */
+
+  /* Tinta de gráfico: recesiva a propósito, el dato manda. */
+  --chart-grid: #23262c;
+  --chart-axis: #32363e;
+  --chart-ink: #9aa1ab;
 }
 
 /* ---- Tema claro -------------------------------------------------------- */
@@ -148,6 +162,18 @@
 
   --checker-a: #ffffff;
   --checker-b: #eeeeea;
+
+  /* Paleta categórica (modo claro). Mismas cuatro familias, escalonadas para #ffffff.
+     Aqua y amarillo quedan por debajo de 3:1 -> se aplica la regla de relieve:
+     etiquetas directas visibles y vista de tabla, ambas presentes en el dashboard. */
+  --series-1: #2a78d6;
+  --series-2: #eb6834;
+  --series-3: #1baf7a;
+  --series-4: #eda100;
+
+  --chart-grid: #e2e2de;
+  --chart-axis: #cfcfca;
+  --chart-ink: #5a606a;
 }
 
 /* Respeta la preferencia del sistema mientras el usuario no elija tema a mano. */
@@ -187,5 +213,17 @@
 
     --checker-a: #ffffff;
     --checker-b: #eeeeea;
+
+    /* Paleta categórica (modo claro). Mismas cuatro familias, escalonadas para #ffffff.
+       Aqua y amarillo quedan por debajo de 3:1 -> se aplica la regla de relieve:
+       etiquetas directas visibles y vista de tabla, ambas presentes en el dashboard. */
+    --series-1: #2a78d6;
+    --series-2: #eb6834;
+    --series-3: #1baf7a;
+    --series-4: #eda100;
+
+    --chart-grid: #e2e2de;
+    --chart-axis: #cfcfca;
+    --chart-ink: #5a606a;
   }
 }

@@ -16,7 +16,8 @@
     "test": "npm run test --workspaces --if-present",
     "build": "npm run build --workspaces --if-present",
     "dev": "npm run dev --workspaces --if-present",
-    "ci:local": "npm run typecheck && npm run lint && npm run test"
+    "ci:local": "npm run typecheck && npm run lint && npm run test",
+    "seed:metrics": "npm run seed:metrics -w @asistente/server"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

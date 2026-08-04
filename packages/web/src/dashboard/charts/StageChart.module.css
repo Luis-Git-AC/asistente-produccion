@@ -1,0 +1,76 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.bar {
+  display: flex;
+  height: 28px;
+  border-radius: var(--radius-control);
+  overflow: hidden;
+  background: var(--surface-sunken);
+}
+
+/* Separación de 2px entre segmentos: sin ella, dos fills contiguos se leen como uno. */
+.segment + .segment {
+  box-shadow: -2px 0 0 var(--surface);
+}
+
+.rows {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 10px 1fr auto auto;
+  align-items: baseline;
+  gap: var(--space-2) var(--space-3);
+  font-size: var(--text-sm);
+}
+
+.swatch {
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+}
+
+.name {
+  color: var(--text-secondary);
+}
+
+.share {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--text-tertiary);
+  font-variant-numeric: tabular-nums;
+}
+
+/* La magnitud es el dato que la barra no puede transmitir: va destacada. */
+.mean {
+  font-family: var(--font-mono);
+  color: var(--text-primary);
+  font-weight: var(--weight-medium);
+  font-variant-numeric: tabular-nums;
+}
+
+.percentiles {
+  grid-column: 2 / -1;
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--text-tertiary);
+  font-variant-numeric: tabular-nums;
+}
+
+.empty {
+  display: grid;
+  place-items: center;
+  min-height: 140px;
+  color: var(--text-tertiary);
+  font-size: var(--text-sm);
+}

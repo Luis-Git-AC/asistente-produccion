@@ -7,6 +7,8 @@ build/
 data/*.db
 data/*.db-journal
 data/*.db-wal
+# El -shm acompaña al WAL y cambia en cada arranque: se coló en un commit por faltar aquí.
+data/*.db-shm
 output/
 coverage/
 # Artefacto generado por aseprite/pack-extension.ps1; la fuente es extension/asistente-connector/

@@ -1,4 +1,5 @@
 import { Router, type Request, type Response } from "express";
+import { buildDashboard } from "../telemetry/dashboard.js";
 import type { MetricsRepository } from "../telemetry/types.js";
 import { parseWindowMs } from "./sse.js";
 
@@ -16,6 +17,8 @@ const MAX_RECENT_LIMIT = 500;
 export interface MetricsRouteDeps {
   metrics: MetricsRepository;
   now?: () => number;
+  /** Umbral configurable de la alerta de coste por sprite. */
+  costPerSpriteThresholdUsd?: number;
 }
 
 export function createMetricsRouter(deps: MetricsRouteDeps): Router {
@@ -37,6 +40,36 @@ export function createMetricsRouter(deps: MetricsRouteDeps): Router {
     });
 
     res.json({ ...aggregate, recent: deps.metrics.recent(limit) });
+  });
+
+  /**
+   * `GET /api/dashboard?window=24h`
+   *
+   * Todo lo que necesita el panel en una sola petición: KPIs, ventana anterior para los deltas,
+   * las cuatro series, las alertas y la tabla. Una llamada por carga en vez de cinco.
+   */
+  router.get("/dashboard", (req: Request, res: Response) => {
+    const windowMs = parseWindowMs(
+      typeof req.query["window"] === "string" ? req.query["window"] : undefined,
+      DEFAULT_WINDOW_MS,
+    );
+
+    const rawLimit = Number(req.query["limit"] ?? DEFAULT_RECENT_LIMIT);
+    const recentLimit =
+      Number.isInteger(rawLimit) && rawLimit > 0
+        ? Math.min(rawLimit, MAX_RECENT_LIMIT)
+        : DEFAULT_RECENT_LIMIT;
+
+    res.json(
+      buildDashboard(deps.metrics, {
+        windowMs,
+        now: deps.now?.() ?? Date.now(),
+        recentLimit,
+        ...(deps.costPerSpriteThresholdUsd === undefined
+          ? {}
+          : { costPerSpriteThresholdUsd: deps.costPerSpriteThresholdUsd }),
+      }),
+    );
   });
 
   return router;

@@ -1,0 +1,32 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.retries {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-3);
+  margin: 0;
+  padding-top: var(--space-3);
+  border-top: var(--border-width) solid var(--border);
+  font-size: var(--text-sm);
+}
+
+.retriesLabel {
+  color: var(--text-secondary);
+}
+
+.retriesValue {
+  font-family: var(--font-mono);
+  font-weight: var(--weight-medium);
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+}
+
+.retriesHint {
+  font-size: var(--text-xs);
+  color: var(--text-tertiary);
+}

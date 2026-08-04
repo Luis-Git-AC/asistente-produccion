@@ -10,7 +10,12 @@
     "test": "vitest run",
     "dev": "tsx watch src/main.ts",
     "start": "tsx src/main.ts",
-    "render:example": "tsx scripts/render-example.ts"
+    "render:example": "tsx scripts/render-example.ts",
+    "seed:metrics": "tsx scripts/seed-metrics.ts",
+    "predev": "tsc -p ../shared/tsconfig.json",
+    "prestart": "tsc -p ../shared/tsconfig.json",
+    "preseed:metrics": "tsc -p ../shared/tsconfig.json",
+    "prerender:example": "tsc -p ../shared/tsconfig.json"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.115.0",

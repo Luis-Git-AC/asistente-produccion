@@ -201,3 +201,29 @@ describe("SqliteMetricsRepository", () => {
     expect(row).toMatchObject({ llmMs: 11, validateMs: 22, renderMs: 33, totalMs: 66 });
   });
 });
+
+describe("ventana acotada por arriba", () => {
+  it("no incluye filas posteriores a `now`", () => {
+    // Es lo que permite pedir la ventana ANTERIOR pasando `now: since`.
+    const repo = makeRepo();
+    repo.record(metricsFixture({ requestId: "antes", createdAt: NOW - 1000 }));
+    repo.record(metricsFixture({ requestId: "despues", createdAt: NOW + 1000 }));
+
+    const aggregate = repo.aggregate({ windowMs: 3600_000, now: NOW });
+
+    expect(aggregate.requests).toBe(1);
+  });
+
+  it("dos ventanas contiguas no se solapan", () => {
+    const repo = makeRepo();
+    const hour = 3600_000;
+    repo.record(metricsFixture({ requestId: "vieja", createdAt: NOW - 90 * 60 * 1000 }));
+    repo.record(metricsFixture({ requestId: "nueva", createdAt: NOW - 10 * 60 * 1000 }));
+
+    const current = repo.aggregate({ windowMs: hour, now: NOW });
+    const previous = repo.aggregate({ windowMs: hour, now: NOW - hour });
+
+    expect(current.requests).toBe(1);
+    expect(previous.requests).toBe(1);
+  });
+});

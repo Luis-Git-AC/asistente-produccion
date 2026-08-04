@@ -13,7 +13,10 @@
     "test": "vitest run",
     "dev": "tsx watch src/index.ts",
     "smoke": "tsx src/bridge/smoke.ts",
-    "start": "tsx src/main.ts"
+    "start": "tsx src/main.ts",
+    "predev": "tsc -p ../shared/tsconfig.json",
+    "prestart": "tsc -p ../shared/tsconfig.json",
+    "presmoke": "tsc -p ../shared/tsconfig.json"
   },
   "dependencies": {
     "@asistente/shared": "*",

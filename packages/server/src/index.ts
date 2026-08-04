@@ -9,6 +9,7 @@ export * from "./llm/prompts/sprite-spec-system.js";
 export * from "./cache/response-cache.js";
 export * from "./telemetry/types.js";
 export * from "./telemetry/sqlite-repository.js";
+export * from "./telemetry/dashboard.js";
 export * from "./mcp/client.js";
 export * from "./routes/sse.js";
 export * from "./routes/assets.js";

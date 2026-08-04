@@ -1,0 +1,78 @@
+.frame {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.svg {
+  display: block;
+  width: 100%;
+  overflow: visible;
+}
+
+/* Rejilla y ejes recesivos: el andamiaje no compite con el dato. */
+.grid {
+  stroke: var(--chart-grid);
+  stroke-width: 1;
+}
+
+.axis {
+  stroke: var(--chart-axis);
+  stroke-width: 1;
+}
+
+.tickLabel {
+  fill: var(--chart-ink);
+  font-family: var(--font-mono);
+  font-size: 11px;
+}
+
+.markLabel {
+  fill: var(--text-primary);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: var(--weight-medium);
+}
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.legendItem {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-xs);
+}
+
+.swatch {
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+/* El texto lleva tinta de texto, nunca el color de la serie: el color lo aporta la muestra. */
+.legendLabel {
+  color: var(--text-secondary);
+}
+
+.legendValue {
+  font-family: var(--font-mono);
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+}
+
+.empty {
+  display: grid;
+  place-items: center;
+  min-height: 140px;
+  color: var(--text-tertiary);
+  font-size: var(--text-sm);
+  text-align: center;
+}
