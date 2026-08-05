@@ -31,6 +31,13 @@ permissions:
 
 env:
   NODE_VERSION: "22"
+  # npm se pina igual que Node, y por el mismo motivo. Fijar sólo Node deja que el runner use el
+  # npm que ese Node traiga ese día, y npm 10 y 11 NO validan igual un package-lock: npm 10 exige
+  # las dependencias transitivas de los paquetes opcionales multiplataforma (aquí
+  # @rolldown/binding-wasm32-wasi, el único binding sin restricción os/cpu) y npm 11 las tolera.
+  # Con esa diferencia, el lockfile puede estar en verde en la máquina de desarrollo y romper
+  # `npm ci` en CI sin que haya cambiado una sola línea del proyecto.
+  NPM_VERSION: "11.6.1"
 
 jobs:
   verificar:
@@ -50,6 +57,9 @@ jobs:
           # instalar — el peor tipo de fallo de caché. `npm ci` sobre un almacén caliente
           # instala igual de rápido y siempre coherente con el lockfile.
           cache: npm
+
+      - name: Fijar la version de npm
+        run: npm install -g npm@${{ env.NPM_VERSION }}
 
       # `npm ci` y no `npm install`: instala EXACTAMENTE el lockfile y falla si se ha desincronizado
       # de los package.json. Un CI que "arregla" el lockfile sobre la marcha no valida lo que se
@@ -121,6 +131,9 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: npm
+
+      - name: Fijar la version de npm
+        run: npm install -g npm@${{ env.NPM_VERSION }}
 
       - name: Instalar dependencias
         run: npm ci
