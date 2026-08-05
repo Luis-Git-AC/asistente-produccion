@@ -4,20 +4,25 @@ name: CI
 #
 #   verificar    Corre en cada PR y en cada push. NO tiene acceso a ningún secreto y NO gasta
 #                API: las evals usan los fixtures grabados. Es la réplica exacta de `ci:local`.
-#   evals-live   Corre de madrugada y al integrar en main. Llama a la API de verdad y sube el
-#                informe JSON como artefacto. Es el único que consume presupuesto.
+#   evals-live   SÓLO por disparo manual. Llama a la API de verdad y sube el informe JSON como
+#                artefacto. Es el único que consume presupuesto.
 #
 # La separación es deliberada: un PR de un fork no puede leer secretos, así que si la validación
 # dependiera de una clave, toda contribución externa nacería en rojo.
+#
+# Por qué el job en vivo NO va en un cron ni en push a main: una corrida completa son 13 llamadas
+# reales a ~$0,28 cada una, unos $3,66. En nocturno serían ~$110 al mes, y en cada push a main
+# otros $3,66 por empujón. Una eval periódica sirve para detectar que el modelo ha cambiado sin
+# que tú toques nada — algo que importa con usuarios dependiendo del sistema, no aquí, donde entre
+# una noche y la siguiente no cambia nada salvo que haya un push. Se lanza a mano desde la pestaña
+# Actions cuando interesa medir.
 
 on:
   pull_request:
   push:
     branches: [main]
-  schedule:
-    # 04:15 UTC a diario. Minuto no redondo a propósito: en punto es cuando GitHub encola medio
-    # mundo y los jobs programados se retrasan más.
-    - cron: "15 4 * * *"
+  # Sin `schedule`: el único job que podría aprovecharlo es el de evals en vivo, y cuesta dinero
+  # real. Ver la nota de arriba.
   workflow_dispatch:
 
 # Un push nuevo sobre la misma rama cancela la corrida anterior: nadie necesita el resultado de
@@ -118,9 +123,10 @@ jobs:
   evals-live:
     name: Evals en vivo (consume API)
     needs: [verificar, comprobar-clave]
-    # Nunca en un PR (un fork no tiene acceso a los secretos y el job moriría al primer paso) y
-    # sólo si la clave existe de verdad.
-    if: github.event_name != 'pull_request' && needs.comprobar-clave.outputs.disponible == 'true'
+    # Sólo por disparo manual, y sólo si la clave existe de verdad. Que sea `== workflow_dispatch`
+    # en vez de `!= pull_request` es lo que impide que un push a main gaste $3,66 sin pedirlo; de
+    # paso deja fuera los PRs de forks, que no pueden leer secretos y morirían al primer paso.
+    if: github.event_name == 'workflow_dispatch' && needs.comprobar-clave.outputs.disponible == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 30
 
