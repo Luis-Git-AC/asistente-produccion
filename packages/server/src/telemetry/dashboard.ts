@@ -1,6 +1,8 @@
 import {
   DEFAULT_COST_PER_SPRITE_THRESHOLD_USD,
   FALLBACK_RATE_THRESHOLD,
+  MIN_EVENTS_FOR_RATE_ALERT,
+  MIN_REQUESTS_FOR_RATE_ALERT,
   type CostBucket,
   type DashboardAlert,
   type DashboardPayload,
@@ -183,14 +185,24 @@ export function buildAlerts(
   }
 
   // 2. Tasa de fallback.
+  //
+  // Se exige evidencia mínima antes de convertir un cociente en una alerta: con una muestra
+  // pequeña, un solo fallback se disfraza de tendencia (1 de 7 = 14 %, 1 de 3 = 33 % y crítico)
+  // y manda a buscar un incidente que no existe. Ver MIN_*_FOR_RATE_ALERT en @asistente/shared.
   const fallbacks = rows.filter((row) => row.fellBack).length;
   const fallbackRate = fallbacks / rows.length;
-  if (fallbackRate > FALLBACK_RATE_THRESHOLD) {
+  const hasEnoughEvidence =
+    rows.length >= MIN_REQUESTS_FOR_RATE_ALERT && fallbacks >= MIN_EVENTS_FOR_RATE_ALERT;
+  if (hasEnoughEvidence && fallbackRate > FALLBACK_RATE_THRESHOLD) {
     alerts.push({
       id: "fallback-rate-high",
       level: fallbackRate > 0.3 ? "critical" : "warning",
       title: "Tasa de fallback alta",
-      detail: `${(fallbackRate * 100).toFixed(0)} % de las peticiones cayeron al modelo secundario.`,
+      // El denominador va en el texto: un porcentaje suelto no deja juzgar si es señal o ruido,
+      // que es justo lo que hay que decidir al leer esta alerta.
+      detail:
+        `${String(fallbacks)} de ${String(rows.length)} peticiones ` +
+        `(${(fallbackRate * 100).toFixed(0)} %) cayeron al modelo secundario.`,
       action:
         "Si SIMULATE_5XX no está activo, el modelo primario está fallando de verdad: revisa el log del servidor.",
     });

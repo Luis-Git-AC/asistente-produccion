@@ -13,6 +13,17 @@ import { Router, type Request, type Response } from "express";
  * confinada al directorio permitido, igual que en el MCP.
  */
 
+/**
+ * `path.basename` NO reconoce `\` como separador cuando corre en POSIX: ahí
+ * `basename("C:\\out\\gem.png")` devuelve la cadena entera, no `gem.png`. Como las rutas las
+ * produce el MCP en la máquina del usuario (Windows) y el servidor puede correr en otra parte
+ * —CI incluido—, el separador se normaliza antes de recortar. Es el mismo criterio que
+ * `sanitizeAssetName` en @asistente/mcp-aseprite.
+ */
+function fileNameOf(rawPath: string): string {
+  return basename(rawPath.replace(/\\/gu, "/"));
+}
+
 /** Sólo se sirven los formatos que produce el pipeline. Nada de servir el directorio entero. */
 const ALLOWED_EXTENSIONS = new Map<string, string>([
   [".png", "image/png"],
@@ -28,8 +39,9 @@ export function createAssetsRouter(deps: AssetsRouteDeps): Router {
   const outputDir = resolve(deps.outputDir);
 
   router.get("/assets/:file", (req: Request, res: Response) => {
-    // basename() se lleva por delante cualquier intento de traversal en el parámetro.
-    const requested = basename(String(req.params["file"] ?? ""));
+    // Se lleva por delante cualquier intento de traversal en el parámetro, con separador POSIX
+    // o Windows: en Linux un `..\..\x` sin normalizar sobreviviría entero a basename().
+    const requested = fileNameOf(String(req.params["file"] ?? ""));
     const extension = extname(requested).toLowerCase();
     const contentType = ALLOWED_EXTENSIONS.get(extension);
 
@@ -65,5 +77,5 @@ export function createAssetsRouter(deps: AssetsRouteDeps): Router {
 /** Construye la URL pública de un asset a partir de su ruta en disco. */
 export function toAssetUrl(filePath: string | null): string | null {
   if (filePath === null || filePath.trim() === "") return null;
-  return `/api/assets/${encodeURIComponent(basename(filePath))}`;
+  return `/api/assets/${encodeURIComponent(fileNameOf(filePath))}`;
 }

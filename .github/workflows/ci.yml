@@ -1,0 +1,145 @@
+name: CI
+
+# Dos trabajos con propósitos distintos:
+#
+#   verificar    Corre en cada PR y en cada push. NO tiene acceso a ningún secreto y NO gasta
+#                API: las evals usan los fixtures grabados. Es la réplica exacta de `ci:local`.
+#   evals-live   Corre de madrugada y al integrar en main. Llama a la API de verdad y sube el
+#                informe JSON como artefacto. Es el único que consume presupuesto.
+#
+# La separación es deliberada: un PR de un fork no puede leer secretos, así que si la validación
+# dependiera de una clave, toda contribución externa nacería en rojo.
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  schedule:
+    # 04:15 UTC a diario. Minuto no redondo a propósito: en punto es cuando GitHub encola medio
+    # mundo y los jobs programados se retrasan más.
+    - cron: "15 4 * * *"
+  workflow_dispatch:
+
+# Un push nuevo sobre la misma rama cancela la corrida anterior: nadie necesita el resultado de
+# un commit que ya ha sido reemplazado.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  NODE_VERSION: "22"
+
+jobs:
+  verificar:
+    name: Verificar (typecheck, lint, test, evals)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          # Cachea el almacén de npm (~/.npm), no node_modules. En este repo es lo correcto:
+          # better-sqlite3 es un módulo nativo y un node_modules restaurado de otra corrida
+          # puede traer un binario compilado contra otro ABI, que falla en runtime y no al
+          # instalar — el peor tipo de fallo de caché. `npm ci` sobre un almacén caliente
+          # instala igual de rápido y siempre coherente con el lockfile.
+          cache: npm
+
+      # `npm ci` y no `npm install`: instala EXACTAMENTE el lockfile y falla si se ha desincronizado
+      # de los package.json. Un CI que "arregla" el lockfile sobre la marcha no valida lo que se
+      # va a publicar.
+      - name: Instalar dependencias
+        run: npm ci
+
+      # Versión fija de Node (sin matriz): el proyecto declara `engines.node >= 22` y se despliega
+      # en local sobre una única versión. Una matriz aquí multiplicaría el tiempo sin cubrir ningún
+      # riesgo real.
+      - name: Entorno
+        run: |
+          node --version
+          npm --version
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Test
+        run: npm run test
+
+      # Sin red y sin clave: las respuestas salen de evals/fixtures/. Si un grader baja de su
+      # umbral en thresholds.json, el proceso sale con código 1 y el PR se pone en rojo.
+      - name: Evals (fixtures)
+        run: npm run evals -- --fixtures
+
+  # ---------------------------------------------------------------------------------------------
+  # ¿Hay clave configurada?
+  #
+  # El contexto `secrets` no se puede leer en un `if` de job, así que la comprobación se hace en un
+  # job aparte que sólo publica un booleano. Sin esto, un clon del repo sin el secreto configurado
+  # vería el job en vivo en ROJO en cada push; así lo ve en gris (omitido), que es lo que de verdad
+  # ha pasado. Comprueba si la cadena está vacía: nunca imprime el valor.
+  # ---------------------------------------------------------------------------------------------
+  comprobar-clave:
+    name: ¿Hay ANTHROPIC_API_KEY?
+    runs-on: ubuntu-latest
+    if: github.event_name != 'pull_request'
+    outputs:
+      disponible: ${{ steps.check.outputs.disponible }}
+    steps:
+      - id: check
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          if [ -n "$ANTHROPIC_API_KEY" ]; then
+            echo "disponible=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "disponible=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::Sin ANTHROPIC_API_KEY en los secretos del repo: se omiten las evals en vivo."
+          fi
+
+  evals-live:
+    name: Evals en vivo (consume API)
+    needs: [verificar, comprobar-clave]
+    # Nunca en un PR (un fork no tiene acceso a los secretos y el job moriría al primer paso) y
+    # sólo si la clave existe de verdad.
+    if: github.event_name != 'pull_request' && needs.comprobar-clave.outputs.disponible == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+
+      - name: Instalar dependencias
+        run: npm ci
+
+      # Sin --record: la corrida mide contra la API pero NO reescribe evals/fixtures/. Regrabar
+      # desde CI dejaría los fixtures cambiando solos, y con ellos la referencia contra la que se
+      # comparan los PRs.
+      - name: Evals contra la API
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: npm run evals -- --json evals/reports/ci-live.json
+
+      # `always()`: si una eval incumple su umbral el paso anterior sale con código 1, y es
+      # justo entonces cuando hace falta el informe para saber QUÉ falló.
+      - name: Publicar informe
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: evals-live-${{ github.run_number }}
+          path: evals/reports/ci-live.json
+          if-no-files-found: warn
+          retention-days: 30

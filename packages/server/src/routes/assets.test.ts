@@ -33,6 +33,17 @@ describe("toAssetUrl", () => {
     expect(toAssetUrl("/repo/output/gem-icon.png")).toBe("/api/assets/gem-icon.png");
   });
 
+  it("recorta la ruta igual corra en Windows o en POSIX", () => {
+    // path.basename() sólo parte por '\' cuando el proceso corre en Windows. Sin normalizar el
+    // separador, esta misma llamada devuelve la ruta ENTERA percent-encoded en Linux — el test
+    // de arriba pasaría en la máquina de desarrollo y fallaría en CI, que es el peor sitio para
+    // enterarse. Aquí se comprueba la propiedad, no el comportamiento del sistema anfitrión.
+    const url = toAssetUrl("C:\\repo\\output\\gem-icon.png") ?? "";
+
+    expect(url).not.toContain("%5C");
+    expect(url).not.toContain("repo");
+  });
+
   it("devuelve null si no hay ruta", () => {
     expect(toAssetUrl(null)).toBeNull();
     expect(toAssetUrl("")).toBeNull();

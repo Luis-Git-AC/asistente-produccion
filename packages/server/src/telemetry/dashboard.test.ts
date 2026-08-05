@@ -203,19 +203,55 @@ describe("buildAlerts", () => {
     expect(alerts.map((a) => a.id)).not.toContain("cache-prefix-invalidated");
   });
 
-  it("avisa si la tasa de fallback supera el 10 %", () => {
+  it("avisa si la tasa de fallback supera el 10 % con muestra suficiente", () => {
+    // 3 de 20 = 15 %: por encima del umbral y con evidencia de sobra.
     const rows = [
-      row({ fellBack: true }),
-      ...Array.from({ length: 4 }, () => row({ fellBack: false })),
+      ...Array.from({ length: 3 }, () => row({ fellBack: true })),
+      ...Array.from({ length: 17 }, () => row({ fellBack: false })),
     ];
 
     expect(buildAlerts(rows).map((a) => a.id)).toContain("fallback-rate-high");
   });
 
   it("escala a crítica si el fallback pasa del 30 %", () => {
-    const rows = [row({ fellBack: true }), row({ fellBack: false })];
+    const rows = [
+      ...Array.from({ length: 5 }, () => row({ fellBack: true })),
+      ...Array.from({ length: 5 }, () => row({ fellBack: false })),
+    ];
 
     expect(buildAlerts(rows).find((a) => a.id === "fallback-rate-high")?.level).toBe("critical");
+  });
+
+  it("NO avisa por un único fallback en una muestra pequeña", () => {
+    // El falso positivo que motivó el mínimo de evidencia: 1 de 7 = 14 %, cruza el umbral del
+    // 10 % y aun así no describe nada — es el fallback haciendo exactamente su trabajo una vez.
+    const rows = [
+      row({ fellBack: true }),
+      ...Array.from({ length: 6 }, () => row({ fellBack: false })),
+    ];
+
+    expect(buildAlerts(rows).map((a) => a.id)).not.toContain("fallback-rate-high");
+  });
+
+  it("NO avisa por un único fallback aunque la ventana tenga muchas peticiones", () => {
+    // Un solo suceso no es una tendencia por mucho que el denominador acompañe.
+    const rows = [
+      row({ fellBack: true }),
+      ...Array.from({ length: 8 }, () => row({ fellBack: false })),
+    ];
+
+    expect(buildAlerts(rows).map((a) => a.id)).not.toContain("fallback-rate-high");
+  });
+
+  it("la alerta de fallback lleva el denominador, no sólo el porcentaje", () => {
+    const rows = [
+      ...Array.from({ length: 3 }, () => row({ fellBack: true })),
+      ...Array.from({ length: 17 }, () => row({ fellBack: false })),
+    ];
+
+    const detail = buildAlerts(rows).find((a) => a.id === "fallback-rate-high")?.detail ?? "";
+    expect(detail).toContain("3 de 20");
+    expect(detail).toContain("15 %");
   });
 
   it("avisa si el coste medio por sprite supera el umbral configurable", () => {

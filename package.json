@@ -17,7 +17,7 @@
     "test": "npm run test --workspaces --if-present",
     "build": "npm run build --workspaces --if-present",
     "dev": "npm run dev --workspaces --if-present",
-    "ci:local": "npm run typecheck && npm run lint && npm run test",
+    "ci:local": "npm run typecheck && npm run lint && npm run test && npm run evals:fixtures",
     "seed:metrics": "npm run seed:metrics -w @asistente/server",
     "evals": "tsx --tsconfig evals/tsconfig.json evals/src/main.ts",
     "evals:fixtures": "npm run evals -- --fixtures",

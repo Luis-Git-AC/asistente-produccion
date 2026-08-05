@@ -4,11 +4,14 @@ build/
 .env
 *.aseprite
 .autorun/
-data/*.db
-data/*.db-journal
-data/*.db-wal
+# Sin barra a propósito: un patrón que contiene '/' queda ANCLADO al directorio del .gitignore,
+# así que "data/*.db" sólo cubría <raíz>/data/ y dejó entrar packages/server/data/ — una base
+# vieja creada cuando `npm run -w` corría con cwd en el paquete. Sin ancla, cubre cualquier nivel.
+*.db
+*.db-journal
 # El -shm acompaña al WAL y cambia en cada arranque: se coló en un commit por faltar aquí.
-data/*.db-shm
+*.db-wal
+*.db-shm
 output/
 coverage/
 # Artefacto generado por aseprite/pack-extension.ps1; la fuente es extension/asistente-connector/

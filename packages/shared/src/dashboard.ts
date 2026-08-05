@@ -136,3 +136,24 @@ export const DEFAULT_COST_PER_SPRITE_THRESHOLD_USD = 0.25;
 
 /** Tasa de fallback por encima de la cual se avisa. */
 export const FALLBACK_RATE_THRESHOLD = 0.1;
+
+/**
+ * Evidencia mínima para que una alerta basada en una PROPORCIÓN pueda dispararse.
+ *
+ * Una tasa calculada sobre pocas peticiones no mide el sistema, mide el ruido: con 7 peticiones
+ * en la ventana, una sola que caiga al modelo secundario ya da un 14 % y cruza el umbral del
+ * 10 %; con 3 peticiones daría un 33 % y escalaría a "crítico". El resultado es una alerta que
+ * grita por un mecanismo que funcionó exactamente como debía.
+ *
+ * Por eso hacen falta las dos condiciones a la vez:
+ *
+ * - `MIN_REQUESTS_FOR_RATE_ALERT` — denominador suficiente para que el cociente signifique algo.
+ * - `MIN_EVENTS_FOR_RATE_ALERT` — un único suceso nunca es una tendencia, sea cual sea el
+ *   denominador. Es la condición que mata el falso positivo de raíz.
+ *
+ * El mínimo se deja bajo (y no en, digamos, 20) a propósito: una caída real del modelo primario
+ * produce muchos fallbacks seguidos, así que 5 de 10 sigue avisando. Lo que se silencia es el
+ * caso de "uno de pocos", no el incidente.
+ */
+export const MIN_REQUESTS_FOR_RATE_ALERT = 10;
+export const MIN_EVENTS_FOR_RATE_ALERT = 2;
